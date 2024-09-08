@@ -1,21 +1,24 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
+// Define the User interface to represent the user data
 interface IUser extends Document {
-  title: string;
-  qualification: string;
+  fname: string;
+  lname: string;
   phone: string;
   email: string;
   password: string;
 }
 
+// Create the User schema
 const userSchema: Schema<IUser> = new Schema({
-  title: { type: String, required: true },  // Ensure title is defined
-  qualification: { type: String, required: true },  // Ensure qualification is defined
-  phone: { type: String, required: true },  // Ensure phone is defined
-  email: { type: String, required: true, unique: true, lowercase: true },
-  password: { type: String, required: true },
+  fname: { type: String, required: true },  // First name field
+  lname: { type: String, required: true },  // Last name field
+  phone: { type: String, required: true },  // Phone number field
+  email: { type: String, required: true, unique: true, lowercase: true },  // Email field
+  password: { type: String, required: true },  // Hashed password field
 });
 
+// Create and export the User model
 const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>("User", userSchema);
 
 export default User;
