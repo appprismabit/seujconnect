@@ -1,4 +1,4 @@
-import InstructorProfile from "@/dashboard/instructor-dashboard/profile";
+import AuthorProfile from "@/dashboard/instructor-dashboard/profile";
 import Wrapper from "@/layouts/Wrapper";
 
 export const metadata = {
@@ -7,9 +7,9 @@ export const metadata = {
 const index = () => {
   return (
     <Wrapper>
-      <InstructorProfile />
+      <AuthorProfile />
     </Wrapper>
-  )
-}
+  );
+};
 
-export default index
+export default index;

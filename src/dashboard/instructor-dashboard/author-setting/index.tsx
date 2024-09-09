@@ -1,19 +1,19 @@
 import DashboardBreadcrumb from "@/components/common/breadcrumb/DashboardBreadcrumb";
 import FooterOne from "@/layouts/footers/FooterOne";
 import HeaderOne from "@/layouts/headers/HeaderOne";
-import ProfileArea from "./ProfileArea";
+import AuthorSettingArea from "./AuthorSettingArea";
 
-const AuthorProfile = () => {
+const AuthorSetting = () => {
   return (
     <>
       <HeaderOne />
       <main className="main-area fix">
         <DashboardBreadcrumb />
-        <ProfileArea />
+        <AuthorSettingArea />
       </main>
       <FooterOne />
     </>
   );
 };
 
-export default AuthorProfile;
+export default AuthorSetting;

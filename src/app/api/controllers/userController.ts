@@ -1,6 +1,6 @@
-import User from '../models/Users'; // Adjust the import path as needed
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import User from "../models/Users"; // Adjust the import path as needed
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 // Interface for the registration data
 interface RegisterData {
@@ -28,51 +28,58 @@ export async function registerUser({
   // Check if the user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    throw new Error('User with this email already exists');
+    throw new Error("User with this email already exists");
   }
 
   // Hash the user's password
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+
   // Create and save the new user
   const newUser = new User({
-    fname,  
-    lname,  
-    phone,  
+    fname,
+    lname,
+    phone,
     email,
-    password: hashedPassword, 
+    password: hashedPassword,
   });
   console.log(newUser);
 
   await newUser.save();
-  
+
   // Generate a JWT token
-  const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET as string, {
-    expiresIn: '1h',
-  });
+  const token = jwt.sign(
+    { userId: newUser._id },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: "1h",
+    }
+  );
 
   return { token };
 }
 
 // Login user function
-export async function loginUser({ email, password }: LoginData): Promise<{ token: string }> {
+export async function loginUser({
+  email,
+  password,
+}: LoginData): Promise<{ token: string }> {
   // Find the user by email
   const user = await User.findOne({ email });
-
+  //console.log(user);
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
   // Compare the provided password with the hashed password stored in the database
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw new Error('Invalid credentials');
+    throw new Error("Invalid credentials");
   }
 
   // Generate a JWT token for the user
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET as string, {
-    expiresIn: '1h',
+  const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
+    expiresIn: "1h",
   });
 
-  return { token };  // Return the JWT token
+  return { token }; // Return the JWT token
 }

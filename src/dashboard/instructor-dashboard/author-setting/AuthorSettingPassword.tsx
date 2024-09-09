@@ -1,5 +1,5 @@
 
-const InstructorSettingPassword = () => {
+const AuthorSettingPassword = () => {
    return (
       <div className="instructor__profile-form-wrap">
          <form onSubmit={(e) => e.preventDefault()} className="instructor__profile-form">
@@ -23,4 +23,4 @@ const InstructorSettingPassword = () => {
    )
 }
 
-export default InstructorSettingPassword
+export default AuthorSettingPassword
