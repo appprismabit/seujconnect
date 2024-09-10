@@ -4,7 +4,7 @@ import MobileMenu from "./MobileMenu";
 
 import logo from "@/assets/img/logo/seuj_connect.png";
 
-const MobileSidebar = ({ isActive, setIsActive }: any) => {
+const MobileSidebar = ({ isActive, setIsActive, isLogin }: any) => {
   return (
     <div className={isActive ? "mobile-menu-visible" : ""}>
       <div className="tgmobile__menu">
@@ -51,9 +51,12 @@ const MobileSidebar = ({ isActive, setIsActive }: any) => {
             </ul>
           </div>
           <div className="text-center">
-            <li className="btn btn-block bg-success ">
-              <Link href="/login" className="text-white">Log in</Link>
-            </li>
+           
+              {!isLogin && (
+                <Link className="btn btn-block bg-success " href="/login" >
+                  Log in
+                </Link>
+              )}
           </div>
         </nav>
       </div>

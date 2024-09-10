@@ -3,7 +3,7 @@ import Link from "next/link";
 import HeaderTopOne from "./menu/HeaderTopOne";
 import Image from "next/image";
 import NavMenu from "./menu/NavMenu";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import UseSticky from "@/hooks/UseSticky";
 import MobileSidebar from "./menu/MobileSidebar";
 import InjectableSvg from "@/hooks/InjectableSvg";
@@ -18,9 +18,11 @@ const TotalWishlist = dynamic(
 const CustomSelect = dynamic(() => import("@/ui/CustomSelect"), { ssr: false });
 
 import logo from "@/assets/img/logo/seuj_connect.png";
+import { useRouter } from "next/navigation";
 
 const HeaderOne = () => {
   const [selectedOption, setSelectedOption] = React.useState(null);
+  const [isLogin, setLogin] = React.useState(0);
 
   const handleSelectChange = (option: React.SetStateAction<null>) => {
     setSelectedOption(option);
@@ -28,6 +30,15 @@ const HeaderOne = () => {
 
   const { sticky } = UseSticky();
   const [isActive, setIsActive] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLogin(1);
+    }
+  }, [router]);
 
   return (
     <>
@@ -45,13 +56,13 @@ const HeaderOne = () => {
                   <nav className="tgmenu__nav">
                     <div className="logo">
                       <Link href="/">
-                        <Image src={logo} alt="Logo" width={200}/>
+                        <Image src={logo} alt="Logo" width={200} />
                       </Link>
                     </div>
                     <div className="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
                       <NavMenu />
                     </div>
-                   {/*  <div className="tgmenu__search d-none d-md-block">
+                    {/*  <div className="tgmenu__search d-none d-md-block">
                       <CustomSelect
                         value={selectedOption}
                         onChange={handleSelectChange}
@@ -59,7 +70,7 @@ const HeaderOne = () => {
                     </div> */}
                     <div className="tgmenu__action">
                       <ul className="list-wrap">
-                      {/*   <li className="wishlist-icon">
+                        {/*   <li className="wishlist-icon">
                           <Link href="/wishlist" className="cart-count">
                             <InjectableSvg
                               src="/assets/img/icons/heart.svg"
@@ -79,19 +90,30 @@ const HeaderOne = () => {
                             <TotalCart />
                           </Link>
                         </li> */}
-                        <li className="header-btn login-btn">
-                          <Link href="/login">Log in</Link>
-                        </li>
+                        {!isLogin ? (
+                          <Link className="btn btn-two" href="/login">
+                            Log in
+                          </Link>
+                        ) : (
+                          <Link
+                            className="btn btn-one btn-sm"
+                            href="/author-dashboard"
+                          >
+                            Profile
+                          </Link>
+                        )}
                       </ul>
                     </div>
                     <div className="mobile-login-btn">
-                      <Link href="/login">
-                        <InjectableSvg
-                          src="/assets/img/icons/user.svg"
-                          alt=""
-                          className="injectable"
-                        />
-                      </Link>
+                      {isLogin && (
+                        <Link href="/author-dashboard">
+                          <InjectableSvg
+                            src="/assets/img/icons/user.svg"
+                            alt=""
+                            className="injectable"
+                          />
+                        </Link>
+                      )}
                     </div>
                     <div
                       onClick={() => setIsActive(true)}
@@ -106,7 +128,11 @@ const HeaderOne = () => {
           </div>
         </div>
       </header>
-      <MobileSidebar isActive={isActive} setIsActive={setIsActive} />
+      <MobileSidebar
+        isActive={isActive}
+        setIsActive={setIsActive}
+        isLogin={isLogin}
+      />
     </>
   );
 };
