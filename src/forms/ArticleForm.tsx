@@ -1,9 +1,9 @@
 "use client";
 
-import menu_data from "@/data/home-data/MenuData";
+import category_data from "@/data/ArticleData/CategoryData";
+import BtnArrow from "@/svg/BtnArrow";
 import { useState } from "react";
 import { toast } from "react-toastify";
-
 
 interface ArticleItem {
   type: "text" | "image";
@@ -38,7 +38,7 @@ const AddArticleForm = () => {
       items,
     };
 
-    console.log(articleData); // Simulate submitting to an API
+    console.log(articleData);
     toast("Article submitted successfully!", { position: "top-center" });
 
     // Reset form after submission
@@ -49,103 +49,55 @@ const AddArticleForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="article-form space-y-6">
-      {/* Title */}
-      <div className="form-group">
-        <label htmlFor="title" className="form-label">Title</label>
-        <input
-          type="text"
-          id="title"
-          className="form-control"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter article title"
-          required
-        />
-      </div>
-
-      {/* Subtitle */}
-      <div className="form-group">
-        <label htmlFor="subtitle" className="form-label">Subtitle</label>
-        <input
-          type="text"
-          id="subtitle"
-          className="form-control"
-          value={subtitle}
-          onChange={(e) => setSubtitle(e.target.value)}
-          placeholder="Enter article subtitle"
-          required
-        />
-      </div>
-
-      {/* Category */}
-      <div className="form-group">
-        <label htmlFor="category" className="form-label">Category</label>
-        <select
-          id="category"
-          className="form-control"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
+    <>
+      <div className="dashboard__content-wrap">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="instructor__profile-form"
         >
-          <option value="" disabled>Select category</option>
-          {menu_data.map((cat) => (
-            <option key={cat.id} value={cat.title}>
-              {cat.title}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="row">
+            <div className="col-md-12">
+              <div className="form-grp">
+                <label htmlFor="arttitle">Ttile of Your Article</label>
+                <input id="firstname" type="text" />
+              </div>
+            </div>
+            <div className="col-md-12">
+              <div className="form-grp">
+                <label htmlFor="artdesc"></label>
+                <textarea id="subtitle"></textarea>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="form-grp select-grp">
+                <label htmlFor="category">Select Category</label>
+                <select id="category" name="category">
+                  {category_data.map((category) => (
+                    <option key={category.id} value={category.title}>
+                      {category.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
 
-      {/* Add Dynamic Items */}
-      <div className="form-group">
-        <label className="form-label">Article Content</label>
-        {/* Flexbox or button group to align buttons in one line */}
-        <div className="d-flex gap-2 mb-3">  {/* Flex container for proper alignment */}
-          <button type="button" className="btn btn-secondary" onClick={() => addItem("text")}>
-            Add Text
-          </button>
-          <button type="button" className="btn btn-secondary" onClick={() => addItem("image")}>
-            Add Image
-          </button>
-        </div>
-      </div>
+            <div className="col-md-6">
+              <div className="form-grp">
+                <label htmlFor="Thumb Photograph">Thumbnail Photograph</label>
+                <input id="thumbphoto" type="file" />
+              </div>
+            </div>
+          </div>
 
-      {/* Render Dynamic Items */}
-      {items.map((item, index) => (
-        <div key={index} className="form-group">
-          {item.type === "text" ? (
-            <>
-              <label htmlFor={`text-${index}`} className="form-label">Text Content {index + 1}</label>
-              <textarea
-                id={`text-${index}`}
-                className="form-control"
-                value={item.value}
-                onChange={(e) => handleItemChange(index, e.target.value)}
-                placeholder="Enter text content"
-              />
-            </>
-          ) : (
-            <>
-              <label htmlFor={`image-${index}`} className="form-label">Image URL {index + 1}</label>
-              <input
-                type="text"
-                id={`image-${index}`}
-                className="form-control"
-                value={item.value}
-                onChange={(e) => handleItemChange(index, e.target.value)}
-                placeholder="Enter image URL"
-              />
-            </>
-          )}
-        </div>
-      ))}
-
-      {/* Submit Button */}
-      <div className="form-group">
-        <button type="submit" className="btn btn-primary">Submit Article</button>
+          <div className="submit-btn mt-25">
+            <button type="submit" className="btn arrow-btn bg-success">
+              Proceed
+              <BtnArrow />
+            </button>
+          </div>
+        </form>
       </div>
-    </form>
+    </>
   );
 };
 
