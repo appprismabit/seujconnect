@@ -8,6 +8,10 @@ import UseSticky from "@/hooks/UseSticky";
 import MobileSidebar from "./menu/MobileSidebar";
 import InjectableSvg from "@/hooks/InjectableSvg";
 import dynamic from "next/dynamic";
+import { useDispatch, useSelector } from "react-redux"; // Import useDispatch
+import { RootState } from "@/redux/store";
+import { initializeToken, UserDetails } from "@/redux/features/authSlice";
+
 const TotalCart = dynamic(() => import("@/components/common/TotalCart"), {
   ssr: false,
 });
@@ -32,13 +36,19 @@ const HeaderOne = () => {
   const [isActive, setIsActive] = useState<boolean>(false);
 
   const router = useRouter();
+  const dispatch = useDispatch(); // Initialize dispatch
 
+  const token = useSelector((state: RootState) => state.auth.token);
+  const userDetails = useSelector(
+    (state: RootState) => state.auth.user
+  ) as UserDetails | null;
+
+  // this is done only to handle the page refresh
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setLogin(1);
+    if (typeof window !== "undefined") {
+      dispatch(initializeToken());
     }
-  }, [router]);
+  }, [dispatch]);
 
   return (
     <>
@@ -62,50 +72,21 @@ const HeaderOne = () => {
                     <div className="tgmenu__navbar-wrap tgmenu__main-menu d-none d-xl-flex">
                       <NavMenu />
                     </div>
-                    {/*  <div className="tgmenu__search d-none d-md-block">
-                      <CustomSelect
-                        value={selectedOption}
-                        onChange={handleSelectChange}
-                      />
-                    </div> */}
                     <div className="tgmenu__action">
                       <ul className="list-wrap">
-                        {/*   <li className="wishlist-icon">
-                          <Link href="/wishlist" className="cart-count">
-                            <InjectableSvg
-                              src="/assets/img/icons/heart.svg"
-                              className="injectable"
-                              alt="img"
-                            />
-                            <TotalWishlist />
-                          </Link>
-                        </li>
-                        <li className="mini-cart-icon">
-                          <Link href="/cart" className="cart-count">
-                            <InjectableSvg
-                              src="/assets/img/icons/cart.svg"
-                              className="injectable"
-                              alt="img"
-                            />
-                            <TotalCart />
-                          </Link>
-                        </li> */}
-                        {!isLogin ? (
+                        {!token ? (
                           <Link className="btn btn-two" href="/login">
                             Log in
                           </Link>
                         ) : (
-                          <Link
-                            className="btn btn-one btn-sm"
-                            href="/author-dashboard"
-                          >
-                            Profile
+                          <Link className="btn " href="/author-dashboard">
+                            <i className="fa fa-user" aria-hidden="true"></i>
                           </Link>
                         )}
                       </ul>
                     </div>
                     <div className="mobile-login-btn">
-                      {isLogin && (
+                      {token && (
                         <Link href="/author-dashboard">
                           <InjectableSvg
                             src="/assets/img/icons/user.svg"
@@ -131,7 +112,7 @@ const HeaderOne = () => {
       <MobileSidebar
         isActive={isActive}
         setIsActive={setIsActive}
-        isLogin={isLogin}
+        isLogin={token}
       />
     </>
   );

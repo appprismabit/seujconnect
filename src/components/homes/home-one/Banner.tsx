@@ -9,19 +9,13 @@ import banner_img_1 from "@/assets/img/banner/banner_img.png";
 import banner_shape_1 from "@/assets/img/banner/banner_shape01.png";
 import banner_shape_2 from "@/assets/img/banner/banner_shape02.png";
 import banner_shape_3 from "@/assets/img/banner/banner_shape01.svg";
-import banner_shape_4 from "@/assets/img/banner/banner_shape02.svg";
 import banner_icon_1 from "@/assets/img/banner/bg_dots.svg";
-import banner_author_1 from "@/assets/img/banner/banner_author01.png";
-import banner_author_2 from "@/assets/img/banner/banner_author02.png";
 
 const Banner: React.FC = () => {
   const svgIconRef = SvgAnimation("/assets/img/objects/title_shape.svg");
 
   return (
-    <section
-      className="banner-area banner-bg tg-motion-effects"
-      style={{ backgroundImage: `url(/assets/img/banner/banner_bg.png)` }}
-    >
+    <section className="banner-area banner-bg tg-motion-effects">
       <div className="container">
         <div className="row justify-content-between align-items-start">
           <div className="col-xl-5 col-lg-6">
@@ -56,17 +50,17 @@ const Banner: React.FC = () => {
                 <br />
                 Where <b>Agriculture</b> meets Innovation
               </h3>
-             {/*  <p data-aos="fade-right" data-aos-delay="600">
+              <p data-aos="fade-right" data-aos-delay="600">
                 Every teaching and learning journey is unique Following
                 We&apos;ll help guide your way.
-              </p> */}
+              </p>
               <div
                 className="banner__btn-wrap"
                 data-aos="fade-right"
                 data-aos-delay="800"
               >
                 <Link href="/contact" className="btn arrow-btn">
-                 Connect Now <BtnArrow />
+                  Connect Now <BtnArrow />
                 </Link>
               </div>
             </div>

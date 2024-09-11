@@ -8,19 +8,19 @@ import avatar_2 from "@/assets/img/courses/details_instructors02.jpg";
 import LogoutButton from "@/components/inner-pages/login/LogoutBtn";
 import { RootState } from "@/redux/store";
 import { useSelector, useDispatch } from "react-redux";
-import { UserDetails, initializeToken } from "@/redux/features/authSlice"; 
+import { UserDetails, initializeToken } from "@/redux/features/authSlice";
 import sidebar_data from "@/data/dashboard-data/SideBarData";
 
 const DashboardSidebar = ({ style }: any) => {
   const pathname = usePathname();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const token = useSelector((state: RootState) => state.auth.token);
   const userDetails = useSelector(
     (state: RootState) => state.auth.user
   ) as UserDetails | null;
 
- // this is done only to handle the page refresh
+  // this is done only to handle the page refresh
   useEffect(() => {
     if (typeof window !== "undefined") {
       dispatch(initializeToken());
