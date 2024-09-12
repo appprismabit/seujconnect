@@ -1,6 +1,6 @@
 import FooterOne from "@/layouts/footers/FooterOne"
 import Blog from "../home-one/Blog"
-import CourseArea from "../home-one/CourseArea"
+import CourseArea from "../home-one/ArticleArea"
 import InstructorTwo from "../home-one/InstructorTwo"
 import About from "./About"
 import Banner from "./Banner"

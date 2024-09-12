@@ -88,18 +88,8 @@ const setting = {
 
 const Categories = () => {
   return (
-    <section className="categories-area section-py-120">
-      <div className="container">
-        <div className="row justify-content-center">
-          <div className="col-xl-5 col-lg-7">
-            <div className="section__title text-center mb-40">
-              <h2 className="title">Top Category We Have</h2>
-              <p className="desc">
-                
-              </p>
-            </div>
-          </div>
-        </div>
+    <section className="categories-area py-20">
+      <div className="container">      
 
         <div className="row">
           <div className="col-12">

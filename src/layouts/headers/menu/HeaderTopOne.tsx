@@ -1,3 +1,4 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 
@@ -57,11 +58,7 @@ const HeaderTopOne = ({ style }: any) => {
                     <i className="fab fa-youtube"></i>
                   </Link>
                 </li>
-                <li>
-                  <Link href="#">
-                    <i className="fab fa-login"></i> Login
-                  </Link>
-                </li>
+               
               </ul>
             </div>
           </div>

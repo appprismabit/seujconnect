@@ -1,14 +1,21 @@
-
-import InstructorAssignment from "@/dashboard/instructor-dashboard/instructor-assignment";
+"use client";
+import ArticleAdd from "@/dashboard/instructor-dashboard/article-add";
 import Wrapper from "@/layouts/Wrapper";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export const metadata = {
-  title: "Seuj Connect : Author Dashboard",
-};
 const index = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    }
+  }, [router]);
   return (
     <Wrapper>
-      <InstructorAssignment />
+      <ArticleAdd />
     </Wrapper>
   );
 };

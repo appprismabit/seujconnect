@@ -1,78 +1,31 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import React, { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import avatar from "@/assets/img/courses/details_instructors01.jpg";
 import avatar_2 from "@/assets/img/courses/details_instructors02.jpg";
-import { getUserFromToken, UserDetails } from "@/data/dashboard-data/UserData";
-
-interface DataType {
-  id: number;
-  title: string;
-  class_name?: string;
-  sidebar_details: {
-    id: number;
-    link: string;
-    icon: string;
-    title: string;
-  }[];
-}
-
-const sidebar_data: DataType[] = [
-  {
-    id: 1,
-    title: "Welcome, User",
-    sidebar_details: [
-      {
-        id: 1,
-        link: "/author-dashboard",
-        icon: "fas fa-home",
-        title: "Dashboard",
-      },
-      {
-        id: 2,
-        link: "/author-profile",
-        icon: "skillgro-avatar",
-        title: "My Profile",
-      },
-      {
-        id: 3,
-        link: "/author-articles",
-        icon: "skillgro-book",
-        title: "My Articles",
-      },
-      {
-        id: 4,
-        link: "/author-setting",
-        icon: "skillgro-settings",
-        title: "Settings",
-      },
-      {
-        id: 5,
-        link: "/login",
-        icon: "skillgro-logout",
-        title: "Logout",
-      },
-    ],
-  },
-];
+import LogoutButton from "@/components/inner-pages/login/LogoutBtn";
+import { RootState } from "@/redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { UserDetails, initializeToken } from "@/redux/features/authSlice";
+import sidebar_data from "@/data/dashboard-data/SideBarData";
 
 const DashboardSidebar = ({ style }: any) => {
   const pathname = usePathname();
-  const router = useRouter();
-  const [userDetails, setUserDetails] = useState<UserDetails | null>();
+  const dispatch = useDispatch();
 
-  // Function to handle logout and clear localStorage
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear the token
-    router.push("/login");
-  };
+  const token = useSelector((state: RootState) => state.auth.token);
+  const userDetails = useSelector(
+    (state: RootState) => state.auth.user
+  ) as UserDetails | null;
 
+  // this is done only to handle the page refresh
   useEffect(() => {
-    const user = getUserFromToken(); // Get user details directly
-    setUserDetails(user);
-  }, []);
+    if (typeof window !== "undefined") {
+      dispatch(initializeToken());
+    }
+  }, [dispatch]);
 
   return (
     <div className="col-lg-3">
@@ -86,22 +39,28 @@ const DashboardSidebar = ({ style }: any) => {
             height={150}
           />
           <div className="content text-center">
-            <h4 className="title text-success">{userDetails?.title}</h4>
-            <h6 className="title">
-              {" "}
-              <i className="fa fa-graduation-cap" aria-hidden="true"></i>{" "}
-              {userDetails?.qualification}
-            </h6>
-            <h6 className="title">
-              {" "}
-              <i className="fa fa-envelope" aria-hidden="true"></i>{" "}
-              {userDetails?.email}
-            </h6>
-            <h6 className="title">
-              {" "}
-              <i className="fa fa-phone-alt" aria-hidden="true"></i>{" "}
-              {userDetails?.phone}
-            </h6>
+            {/* Display user details if available */}
+            {userDetails ? (
+              <>
+                <h4 className="title text-success">{userDetails.title}</h4>
+                <h6 className="title">
+                  <i className="fa fa-graduation-cap" aria-hidden="true"></i>{" "}
+                  {userDetails.qualification}
+                </h6>
+                <h6 className="title">
+                  <i className="fa fa-envelope" aria-hidden="true"></i>{" "}
+                  {userDetails.email}
+                </h6>
+                <h6 className="title">
+                  <i className="fa fa-phone-alt" aria-hidden="true"></i>{" "}
+                  {userDetails.phone}
+                </h6>
+              </>
+            ) : token ? (
+              <p>Loading user details...</p>
+            ) : (
+              <p>No user details available</p>
+            )}
           </div>
         </div>
         <div className="account__divider"></div>
@@ -119,25 +78,16 @@ const DashboardSidebar = ({ style }: any) => {
                     key={list.id}
                     className={pathname === list.link ? "active" : ""}
                   >
-                    {list.title === "Logout" ? (
-                      <a
-                        href="#"
-                        onClick={handleLogout}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <i className={list.icon}></i>
-                        {list.title}
-                      </a>
-                    ) : (
-                      <Link href={list.link}>
-                        <i className={list.icon}></i>
-                        {list.title}
-                      </Link>
-                    )}
+                    <Link href={list.link}>
+                      <i className={list.icon}></i>
+                      {list.title}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </nav>
+            <div className="account__divider"></div>
+            <LogoutButton />
           </React.Fragment>
         ))}
       </div>

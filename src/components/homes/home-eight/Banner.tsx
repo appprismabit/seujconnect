@@ -49,7 +49,7 @@ const Banner = () => {
         <section className="banner-area fix banner-bg-seven tg-motion-effects" style={{ backgroundImage: `url(/assets/img/banner/h8_hero_bg.jpg)` }}>
             <div className="container">
                 <div className="row align-items-center justify-content-center">
-                    <div className="col-lg-6">
+                    <div className="col-lg-8">
                         <div className="banner__content-seven">
                             <h2 className="title">Take Your
                                 <span className="title-shape-wrap">Cooking <InjectableSvg src="/assets/img/banner/h8_hero_title_shape.svg" alt="" className="injectable" /></span>
@@ -76,7 +76,7 @@ const Banner = () => {
                         </div>
                     </div>
                     
-                    <div className="col-lg-6 col-md-10">
+                    <div className="col-lg-4 col-md-10">
                         <div className="banner__images-seven">
                             <Image src={banner_img1} alt="img" className="main-img" />
                             <div className="big_shape">

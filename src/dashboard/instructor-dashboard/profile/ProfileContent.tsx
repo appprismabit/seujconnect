@@ -1,27 +1,24 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { getUserFromToken, UserDetails } from "@/data/dashboard-data/UserData";
+import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { initializeToken } from "@/redux/features/authSlice";
 
 interface ProfileContentProps {
   style?: any;
 }
 
 const ProfileContent: React.FC<ProfileContentProps> = ({ style }) => {
-  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
-
+  const dispatch = useDispatch();
+  const userDetails = useSelector(
+    (state: RootState) => state.auth.user
+  ) as UserDetails | null;
   useEffect(() => {
-    const fetchUserDetails = () => {
-      try {
-        const user = getUserFromToken(); // Ensure this function is synchronous or handle promises if async
-        setUserDetails(user);
-      } catch (error) {
-        console.error("Failed to fetch user details:", error);
-        setUserDetails(null); // You may want to set a specific error state here
-      }
-    };
-
-    fetchUserDetails();
-  }, []);
+    if (typeof window !== "undefined") {
+      dispatch(initializeToken());
+    }
+  }, [dispatch]);
 
   return (
     <div className="col-lg-9">
