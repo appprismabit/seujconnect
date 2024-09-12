@@ -1,26 +1,40 @@
-import Article from '../models/articleModel';
-import jwt from 'jsonwebtoken';
+import registerArticleModel, { IaddArticle } from '../models/articleModel';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-interface RegisterArticle {
-    articleTitle: string;
-    articleSubtitle: string;
-    articleCatg: string;
-}
-export async function registerArticle({
-    articleTitle,
-    articleSubtitle,
-    articleCatg
-}:RegisterArticle): Promise<{ token: string }> {
-    const newArticle = new Article({
-        articleTitle,
-        articleSubtitle,
-        articleCatg
-    });
+export async function addArticle(body: any) {
+    const decoded = jwt.decode(body.token);
+    let userId: string | undefined;
 
-    await newArticle.save();
+    if (decoded && typeof decoded !== 'string') {
+        userId = (decoded as JwtPayload)?.user?._id; // Accessing the user's ID from the token
+    }
+    if (!userId) {
+        throw new Error('User ID not found in token');
+    }
 
-    const token = jwt.sign({articleId: newArticle._id}, process.env.JWT_SECRET as string, {
-        expiresIn: '1h',
-    });
-    return {token};
+    try {
+        const { title, description, category } = body;
+        let filePath: string | undefined;
+
+        // Handle file if it exists
+        if (body.file && body.file.filepath) {
+            filePath = body.file.filepath; // File path where formidable saved the file
+        }
+
+        const newArticle = new registerArticleModel({
+            title,
+            description,
+            category,
+            userId,
+            filePath // Save the file path if available
+        });
+
+        await newArticle.save();
+        
+        return { message: 'Article added successfully' };
+
+    } catch (error: any) {
+        console.error('Error adding article:', error.message);
+        throw new Error(error.message);
+    }
 }

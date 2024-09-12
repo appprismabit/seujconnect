@@ -15,11 +15,9 @@ export async function updateUserProfile(body: any) {
     if (!userId) {
         throw new Error('User ID not found in token');
     }
-
     try {
         const { fname, lname, email, phone, skill } = body;
       
-
         // Ensure skill is included in the update
         const updatedUser = await updateUserProfileModel.findByIdAndUpdate(
             userId,

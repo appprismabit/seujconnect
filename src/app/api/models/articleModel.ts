@@ -1,17 +1,22 @@
-import mongoose, {Schema, Document, Model} from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
-interface IArticle extends Document {
-    articleTitle: string;
-    articleSubtitle: string;
-    articleCatg: string;
+interface IaddArticle extends Document {
+    title: string;
+    description: string;
+    category: string;
+    userId: string;
+    filePath?: string; // Optional field to store file path
 }
 
-const articleSchema: Schema<IArticle> = new Schema({
-    articleTitle: {type: String, required: true},
-    articleSubtitle: {type: String, required: true},
-    articleCatg: {type: String, required: true}
+const articleSchema: Schema<IaddArticle> = new Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    category: { type: String, required: true },
+    userId: { type: String, required: true },
+    filePath: { type: String } // Optional field
 });
 
-const Article: Model<IArticle> = mongoose.models.Article || mongoose.model<IArticle>("Article", articleSchema);
-export default Article;
-export type{IArticle};
+const registerArticleModel: Model<IaddArticle> = mongoose.models.Article || mongoose.model<IaddArticle>("Article", articleSchema);
+
+export default registerArticleModel;
+export type { IaddArticle };

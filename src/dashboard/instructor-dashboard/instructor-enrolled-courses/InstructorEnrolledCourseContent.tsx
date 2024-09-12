@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from 'swiper/modules';
 
-const enrolled_courses: string[] = ["Enrolled Courses", "Active Courses", "Completed Courses",];
+const enrolled_courses: string[] = ["My Articles", "Active Articles", "Completed Courses",];
 const my_courses: string[] = ["Publish", "Pendig", "Draft",];
 
 const setting = {
