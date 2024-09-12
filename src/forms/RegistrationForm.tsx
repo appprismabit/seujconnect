@@ -29,7 +29,7 @@ const schema = yup.object({
 })
    .required();
 
-   console.log(schema);
+   //console.log(schema);
 
 const RegistrationForm = () => {
    const [loading, setLoading] = useState(false);

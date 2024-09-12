@@ -35,7 +35,7 @@ const ProfileContent: React.FC<ProfileContentProps> = ({ style }) => {
               {userDetails ? (
                 <ul className="list-wrap">
                   <li>
-                    <span>First Name</span> {userDetails.title || "N/A"}
+                    <span>Name</span> {userDetails.fname} {userDetails.lname}
                   </li>
                   <li>
                     <span>Email</span> {userDetails.email || "N/A"}

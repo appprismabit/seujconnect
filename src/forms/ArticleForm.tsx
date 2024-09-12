@@ -1,152 +1,141 @@
-"use client";
+// "use client"; // Ensure this is the first line of your file
 
-import menu_data from "@/data/home-data/MenuData";
-import { useState } from "react";
-import { toast } from "react-toastify";
+// import { toast } from 'react-toastify';
+// import * as yup from "yup";
+// import { useForm } from "react-hook-form";
+// import { yupResolver } from '@hookform/resolvers/yup';
+// import BtnArrow from "@/svg/BtnArrow";
+// import Link from "next/link";
+// import { useState } from 'react';
+// import { useRouter } from 'next/router';
+
+// inerface FormData{
+//   articleTitle: string;
+//   articleSubtitle: string;
+//   articleCatg: string;
+// }
+
+// const schema = yup.object({
+// articleTitle: yup.string().required('Article title is required').label('title'),
+// articleSubtitle: yup.string().required('Article sub-title is required').label('sub-title');
+// });
+
+// const ArticleForm = () => {
+//   const [articleTitle, setTitle] = useState("");
+//   const [articleSubtitle, setSubtitle] = useState("");
+//   const [articleCatg, setCategory] = useState("");
+//   //const [thumbnail, setThumbnail] = useState<File | null>(null);
+
+//   const router = useRouter(); // Correct hook usage from next/navigation
+
+//   // Handle form submission
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     const { register, handleSubmit, reset, formState: { errors }, } = useForm<FormData>({ resolver: yupResolver(schema), });
 
 
-interface ArticleItem {
-  type: "text" | "image";
-  value: string;
-}
+//     // if (!thumbnail) {
+//     //   toast.error("Please add a thumbnail image.", { position: "top-center" });
+//     //   return;
+//     // }
 
-const AddArticleForm = () => {
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [items, setItems] = useState<ArticleItem[]>([]);
+//     const articleData = {
+//       title,
+//       subtitle,
+//       category,
+//       thumbnail,
+//     };
 
-  // Add a new content item (either text or image)
-  const addItem = (type: "text" | "image") => {
-    setItems([...items, { type, value: "" }]);
-  };
+//     console.log(articleData); // Simulate form submission
+//     toast.success("Article submitted successfully!", { position: "top-center" });
 
-  // Handle item change
-  const handleItemChange = (index: number, value: string) => {
-    const updatedItems = [...items];
-    updatedItems[index].value = value;
-    setItems(updatedItems);
-  };
+//     // Redirect to another page after submission
+//     router.push("/articles");
 
-  // Submit the form
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const articleData = {
-      title,
-      subtitle,
-      category,
-      items,
-    };
+//     // Reset form fields
+//     setTitle("");
+//     setSubtitle("");
+//     setCategory("");
+//     setThumbnail(null);
+//   };
 
-    console.log(articleData); // Simulate submitting to an API
-    toast("Article submitted successfully!", { position: "top-center" });
+//   // Handle thumbnail change
+//   const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     if (e.target.files && e.target.files[0]) {
+//       setThumbnail(e.target.files[0]);
+//     }
+//   };
 
-    // Reset form after submission
-    setTitle("");
-    setSubtitle("");
-    setCategory("");
-    setItems([]);
-  };
+//   return (
+//     <form onSubmit={handleSubmit(onSubmit)} className="container mt-5 p-4 border rounded shadow-sm bg-white">
+//       <h3 className="mb-4 text-center">Add New Article</h3>
 
-  return (
-    <form onSubmit={handleSubmit} className="article-form space-y-6">
-      {/* Title */}
-      <div className="form-group">
-        <label htmlFor="title" className="form-label">Title</label>
-        <input
-          type="text"
-          id="title"
-          className="form-control"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter article title"
-          required
-        />
-      </div>
+//       {/* Title */}
+//       <div className="mb-3">
+//         <label htmlFor="title" className="form-label fw-bold">Title</label>
+//         <input
+//           type="text"
+//           id="articleTitle"
+//           className="form-control"
+//           value={title}
+//           onChange={(e) => setTitle(e.target.value)}
+//           placeholder="Enter article title"
+//           required
+//         />
+//       </div>
 
-      {/* Subtitle */}
-      <div className="form-group">
-        <label htmlFor="subtitle" className="form-label">Subtitle</label>
-        <input
-          type="text"
-          id="subtitle"
-          className="form-control"
-          value={subtitle}
-          onChange={(e) => setSubtitle(e.target.value)}
-          placeholder="Enter article subtitle"
-          required
-        />
-      </div>
+//       {/* Subtitle */}
+//       <div className="mb-3">
+//         <label htmlFor="subtitle" className="form-label fw-bold">Subtitle</label>
+//         <input
+//           type="text"
+//           id="articleSubtitle"
+//           className="form-control"
+//           value={subtitle}
+//           onChange={(e) => setSubtitle(e.target.value)}
+//           placeholder="Enter article subtitle"
+//           required
+//         />
+//       </div>
 
-      {/* Category */}
-      <div className="form-group">
-        <label htmlFor="category" className="form-label">Category</label>
-        <select
-          id="category"
-          className="form-control"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-        >
-          <option value="" disabled>Select category</option>
-          {menu_data.map((cat) => (
-            <option key={cat.id} value={cat.title}>
-              {cat.title}
-            </option>
-          ))}
-        </select>
-      </div>
+//       {/* Category */}
+//       <div className="mb-3">
+//         <label htmlFor="category" className="form-label fw-bold">Category</label>
+//         <select
+//           id="articleCatg"
+//           className="form-select"
+//           value={category}
+//           onChange={(e) => setCategory(e.target.value)}
+//           required
+//         >
+//           <option value="" disabled>Select category</option>
+//           {menu_data.map((cat) => (
+//             <option key={cat.id} value={cat.title}>
+//               {cat.title}
+//             </option>
+//           ))}
+//         </select>
+//       </div>
 
-      {/* Add Dynamic Items */}
-      <div className="form-group">
-        <label className="form-label">Article Content</label>
-        {/* Flexbox or button group to align buttons in one line */}
-        <div className="d-flex gap-2 mb-3">  {/* Flex container for proper alignment */}
-          <button type="button" className="btn btn-secondary" onClick={() => addItem("text")}>
-            Add Text
-          </button>
-          <button type="button" className="btn btn-secondary" onClick={() => addItem("image")}>
-            Add Image
-          </button>
-        </div>
-      </div>
+//       {/* Thumbnail Image */}
+//       {/* <div className="mb-4">
+//         <label htmlFor="thumbnail" className="form-label fw-bold">Thumbnail Image</label>
+//         <input
+//           type="file"
+//           id="thumbnail"
+//           className="form-control"
+//           accept="image/*"
+//           onChange={handleThumbnailChange}
+//           required
+//         />
+//       </div> */}
 
-      {/* Render Dynamic Items */}
-      {items.map((item, index) => (
-        <div key={index} className="form-group">
-          {item.type === "text" ? (
-            <>
-              <label htmlFor={`text-${index}`} className="form-label">Text Content {index + 1}</label>
-              <textarea
-                id={`text-${index}`}
-                className="form-control"
-                value={item.value}
-                onChange={(e) => handleItemChange(index, e.target.value)}
-                placeholder="Enter text content"
-              />
-            </>
-          ) : (
-            <>
-              <label htmlFor={`image-${index}`} className="form-label">Image URL {index + 1}</label>
-              <input
-                type="text"
-                id={`image-${index}`}
-                className="form-control"
-                value={item.value}
-                onChange={(e) => handleItemChange(index, e.target.value)}
-                placeholder="Enter image URL"
-              />
-            </>
-          )}
-        </div>
-      ))}
+//       {/* Submit Button */}
+//       <div className="d-grid">
+//         <button type="submit" className="btn btn-primary btn-lg">Submit Article</button>
+//       </div>
+//     </form>
+//   );
+// };
 
-      {/* Submit Button */}
-      <div className="form-group">
-        <button type="submit" className="btn btn-primary">Submit Article</button>
-      </div>
-    </form>
-  );
-};
-
-export default AddArticleForm;
+// export default ArticleForm;

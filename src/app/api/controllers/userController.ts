@@ -65,7 +65,7 @@ export async function loginUser({
 }: LoginData): Promise<{ token: string }> {
   // Find the user by email
   const user = await User.findOne({ email });
-  //console.log(user);
+ 
   if (!user) {
     throw new Error("User not found");
   }
