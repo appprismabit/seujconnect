@@ -1,54 +1,59 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '../db/index';
-import { addArticle } from '../controllers/articleController';
-import formidable from 'formidable';
-import fs from 'fs';
-import path from 'path';
+import { NextResponse } from "next/server";
+import { connectDB } from "../db/index";
+import { addArticle } from "../controllers/articleController";
+import FileHelper from "../Helpers/FileUploadHelper";
 
+// Disable the default body parser
 export const config = {
-    api: {
-        bodyParser: false,
-    },
+  api: {
+    bodyParser: false,
+  },
 };
 
-const ensureDirectoryExists = (dir: string) => {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true }); // Create directory recursively if it does not exist
+export async function POST(req: Request) {
+  // Ensure the database is connected
+  await connectDB();
+
+  try {
+    // Parse multipart form data
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
+    const title = formData.get("title")?.toString() || "";
+    const description = formData.get("description")?.toString() || "";
+    const category = formData.get("category")?.toString() || "";
+    const token = formData.get("token")?.toString() || ""; // Assuming JWT token is passed for authentication
+
+    // Validate that required fields are present
+    if (!file) {
+      return NextResponse.json({ error: "File is missing" }, { status: 400 });
     }
-};
+    if (!title || !description || !category) {
+      return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+    }
 
-export async function POST(req: NextRequest) {
-    await connectDB();
+    // Save the file using the helper method and handle stream
+    const savedFilePath = await FileHelper.saveFile(file.stream(), file.name, "uploads");
 
-    return new Promise((resolve, reject) => {
-        const uploadDir = path.join(process.cwd(), '/public/uploads/');
-        ensureDirectoryExists(uploadDir); // Ensure the upload directory exists
+    // Prepare the article data for saving in the database
+    const articleData = {
+      title,
+      description,
+      category,
+      filePath: savedFilePath, // Store file path in DB
+      token, // Pass token for user authentication
+    };
 
-        const form = new formidable.IncomingForm({
-            uploadDir: uploadDir,
-            keepExtensions: true,
-            maxFileSize: 5 * 1024 * 1024, // 5MB
-        });
+    // Save the article in the database using your article controller
+    const savedArticle = await addArticle(articleData);
 
-        form.parse(req as any, async (err: any, fields: any, files: any) => {
-            if (err) {
-                console.error('Formidable parsing error:', err);
-                return resolve(NextResponse.json({ error: err.message }, { status: 400 }));
-            }
-
-            try {
-                // Prepare body with parsed fields and file path
-                const body = {
-                    ...fields,
-                    file: files.file ? files.file[0] : undefined,
-                };
-
-                const response = await addArticle(body);
-                return resolve(NextResponse.json({ message: 'Article added successfully', response }, { status: 201 }));
-            } catch (error: any) {
-                console.error('Error adding article:', error);
-                return resolve(NextResponse.json({ error: error.message }, { status: 400 }));
-            }
-        });
-    });
+    // Return success response
+    return NextResponse.json(
+      { message: "Article added successfully", article: savedArticle },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    // Log and return error
+    console.error("Error handling article upload:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

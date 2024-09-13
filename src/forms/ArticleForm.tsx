@@ -10,7 +10,7 @@ const AddArticleForm = ({ style }: any) => {
     title: "",
     description: "",
     category: "",
-    token: ''
+    token: "",
   });
 
   const [file, setFile] = useState<File | null>(null);
@@ -18,13 +18,17 @@ const AddArticleForm = ({ style }: any) => {
   useEffect(() => {
     // Safely access localStorage only on the client side
     const token = localStorage.getItem("token");
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      token: token || ''
+      token: token || "",
     }));
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
@@ -36,40 +40,65 @@ const AddArticleForm = ({ style }: any) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    const formDataToSend = new FormData();
-    formDataToSend.append('title', formData.title);
-    formDataToSend.append('description', formData.description);
-    formDataToSend.append('category', formData.category);
-    formDataToSend.append('token', formData.token);
-    if (file) {
-      formDataToSend.append('file', file);
+
+    // Basic validation
+    if (
+      !formData.title ||
+      !formData.description ||
+      !formData.category ||
+      !file
+    ) {
+      toast.error("Please fill out all fields and upload a file", {
+        position: "top-center",
+      });
+      return;
     }
-  
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("token", formData.token);
+    if (file) {
+      formDataToSend.append("file", file); // Make sure this key matches what the back-end expects
+    }
+
     try {
       const response = await fetch("/api/addArticle", {
-        method: 'POST',
+        method: "POST",
         body: formDataToSend,
       });
-  
+
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-        toast.success('Article added successfully!', { position: 'top-center' });
+        toast.success("Article added successfully!", {
+          position: "top-center",
+        });
+
+        // Optionally reset the form
+        setFormData({
+          title: "",
+          description: "",
+          category: "",
+          token: formData.token, // Keep the token
+        });
+        setFile(null);
       } else {
         const errorText = await response.text(); // Read the response body for error details
-        console.error('Error adding article:', errorText);
-        toast.error('Error adding article: ' + errorText, { position: 'top-center' });
+        console.error("Error adding article:", errorText);
+        toast.error("Error adding article: " + errorText, {
+          position: "top-center",
+        });
       }
     } catch (error) {
-      console.error('Unexpected error:', error);
-      toast.error('An unexpected error occurred', { position: 'top-center' });
+      console.error("Unexpected error:", error);
+      toast.error("An unexpected error occurred", { position: "top-center" });
     }
   };
-  
 
   return (
-    <div className="dashboard__content-wrap">
+    <div className="dashboard__content-wrap" style={style}>
       <form onSubmit={handleSubmit} className="instructor__profile-form">
         <div className="row">
           <div className="col-md-12">
@@ -81,6 +110,7 @@ const AddArticleForm = ({ style }: any) => {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="Enter article title"
+                required
               />
             </div>
           </div>
@@ -93,6 +123,7 @@ const AddArticleForm = ({ style }: any) => {
                 value={formData.description}
                 onChange={handleInputChange}
                 placeholder="Enter article description"
+                required
               ></textarea>
             </div>
           </div>
@@ -100,7 +131,13 @@ const AddArticleForm = ({ style }: any) => {
           <div className="col-md-6">
             <div className="form-grp select-grp">
               <label htmlFor="category">Select Category</label>
-              <select id="category" value={formData.category} onChange={handleInputChange}>
+              <select
+                id="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select a category</option>
                 {category_data.map((category) => (
                   <option key={category.id} value={category.title}>
                     {category.title}
@@ -113,7 +150,12 @@ const AddArticleForm = ({ style }: any) => {
           <div className="col-md-6">
             <div className="form-grp">
               <label htmlFor="thumbphoto">Thumbnail Photograph</label>
-              <input id="thumbphoto" type="file" onChange={handleFileChange} />
+              <input
+                id="thumbphoto"
+                type="file"
+                onChange={handleFileChange}
+                required
+              />
             </div>
           </div>
         </div>
