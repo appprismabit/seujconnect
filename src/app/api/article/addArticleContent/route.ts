@@ -49,6 +49,7 @@ export async function POST(req: Request) {
       content: contentArray,
       token,
     };
+    
 
     // Retrieve the existing article content using userId (from token)
     const saveArticleContent = await addArticleContent(newArticle);
