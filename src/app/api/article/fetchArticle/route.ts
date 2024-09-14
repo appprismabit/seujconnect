@@ -1,16 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getArticlesByUserId } from '../../controllers/articleController';
 import { connectDB } from '../../db';
+import registerArticleModel from '../../models/articleModel'
 
+export const config = {
+  api: {
+    bodyParser: false, // Allow JSON body parsing
+  },
+};
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const { userId } = await req.json();
+    await connectDB();
 
+
+    const contentType = req.headers.get('Content-Type') || '';
+    let userId = '';
+    if (contentType.includes('multipart/form-data')) {
+      // Parse form-data
+      const formData = await req.formData();
+      userId = formData.get('userId')?.toString() || '';
+    }
     if (!userId) {
-      return NextResponse.json({ message: 'UserId is required' }, { status: 400 });
+      const fetchAllArticles = await registerArticleModel.find();
+      return NextResponse.json(fetchAllArticles, { status: 200 });
     }
 
-    await connectDB();
 
     const articles = await getArticlesByUserId({ userId });
 

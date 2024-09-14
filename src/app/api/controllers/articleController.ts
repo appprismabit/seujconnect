@@ -58,6 +58,27 @@ export async function getArticlesByUserId({
   }
 };
 
+export async function getArticles(){
+  const allArticles = await registerArticleModel.find({});
+  return{
+    message : 'All articles',
+    allArticles
+  } 
+}
+
+export async function delArticleById (body: any){
+  const articleId = body.articleId;
+  const deletedArticle = await registerArticleModel.findByIdAndDelete(articleId);
+  if (!deletedArticle) {
+    throw new Error('Article not found');
+  }
+
+   return {
+      message: 'Article deleted successfully',
+      deletedArticle
+    };
+}
+
 export async function addArticleContent(body: any) {
   // Decode the JWT token to extract user details
   const decoded = jwt.decode(body.token);
@@ -70,9 +91,6 @@ export async function addArticleContent(body: any) {
   if (!userId) {
     throw new Error("User ID not found in token");
   }
-
-  
-
   try {
     
    
