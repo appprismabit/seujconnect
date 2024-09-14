@@ -21,7 +21,7 @@ const HomeOne = () => {
       <main className="main-area fix">
         <Banner />
         <HomeFeature />
-        {/*    <BrandOne /> */}
+           {/* <BrandOne /> */}
         <ArticleArea />
         <Features />
         <Counter />
