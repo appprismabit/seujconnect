@@ -42,9 +42,9 @@ const DashboardSidebar = ({ style }: any) => {
             {/* Display user details if available */}
             {userDetails ? (
               <>
-                <h4 className="title text-success">{userDetails.title}</h4>
+                <h4 className="title text-success">{userDetails.fname} {userDetails.lname}</h4>
                 <h6 className="title">
-                  <i className="fa fa-graduation-cap" aria-hidden="true"></i>{" "}
+            
                   {userDetails.qualification}
                 </h6>
                 <h6 className="title">

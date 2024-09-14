@@ -37,7 +37,7 @@ const setting = {
 
 const ArticleArea = ({ style }: any) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [articles, setArticles] = useState([]); // State to store fetched articles
+  const [articles, setArticles] = useState([]);
 
   const handleTabClick = (index: number) => {
     setActiveTab(index);
@@ -51,8 +51,6 @@ const ArticleArea = ({ style }: any) => {
         headers: {
           'Content-Type': 'application/json', // Set content type to JSON
         },
-        // Omit userId if not needed in the request
-        //body: JSON.stringify({}) 
       });
       console.log(response);
 
@@ -102,7 +100,6 @@ const ArticleArea = ({ style }: any) => {
             </div>
           </div>
         </div>
-
         <div className="tab-content" id="courseTabContent">
           <div
             className={`tab-pane fade show active`}
@@ -144,7 +141,7 @@ const ArticleArea = ({ style }: any) => {
                       </h5>
                       <p className="description">{article.description}</p>
                       <p className="author">
-                        By <Link href="#">{article.username}</Link>
+                        By <Link href="#">{article.userFirstName} {article.userLastName}</Link>
                       </p>
                       <div className="courses__item-bottom">
                         <div className="button">

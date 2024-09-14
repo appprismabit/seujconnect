@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const newName = 'AR-TH' + lastArticle?._id +  '.' + fileExtension;
 
     // Save the file using the helper method and handle stream
-    const savedFilePath = await FileHelper.saveFile(file.stream(), fileName, "uploads/articlethumb");
+    const savedFilePath = await FileHelper.saveFile(file.stream(), newName, "uploads/articlethumb");
 
     // Prepare the article data for saving in the database
     const articleData = {
