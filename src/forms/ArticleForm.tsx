@@ -64,7 +64,7 @@ const AddArticleForm = ({ style }: any) => {
     }
 
     try {
-      const response = await fetch("/api/addArticle", {
+      const response = await fetch("/api/article/addArticle", {
         method: "POST",
         body: formDataToSend,
       });

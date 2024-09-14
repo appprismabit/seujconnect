@@ -23,7 +23,7 @@ const AuthorSettingPassword = ({style}: any) => {
    const handleSubmit = async (e: React.FormEvent) =>{
       e.preventDefault();
       try{
-         const response = await fetch("/api/updateUserPassword", {
+         const response = await fetch("/api/userprofile/updateUserPassword", {
             method: 'POST',
             headers :{
                'Content-Type': 'application/json',

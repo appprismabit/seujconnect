@@ -53,7 +53,7 @@ const AuthorSettingProfile = ({ style }: any) => {
     //setFormData(true);
 
     try {
-      const response = await fetch("/api/updateUserProfile", {
+      const response = await fetch("/api/userprofile/updateUserProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

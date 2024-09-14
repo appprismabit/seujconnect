@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "../db/index";
-import { addArticle } from "../controllers/articleController";
-import FileHelper from "../Helpers/FileUploadHelper";
+import { connectDB } from "../../db/index";
+import { addArticle } from "../../controllers/articleController";
+import FileHelper from "../../Helpers/FileUploadHelper";
+import registerArticleModel from "../../models/articleModel";
+
 
 // Disable the default body parser
 export const config = {
@@ -30,18 +32,32 @@ export async function POST(req: Request) {
     if (!title || !description || !category) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
+    const lastArticle = await registerArticleModel.findOne({})
+      .sort({ _id: -1 }) // Sort by _id in descending order to get the most recent document
+      .exec(); 
+
+      //const uniqueName = lastArticle?._id + "";
+
+     
+    
+    const fileName = file.name;
+    const fileExtension = fileName.split('.').pop();
+    const newName = 'AR-TH' + lastArticle?._id +  '.' + fileExtension;
 
     // Save the file using the helper method and handle stream
-    const savedFilePath = await FileHelper.saveFile(file.stream(), file.name, "uploads");
+    const savedFilePath = await FileHelper.saveFile(file.stream(), fileName, "uploads/articlethumb");
 
     // Prepare the article data for saving in the database
     const articleData = {
       title,
       description,
       category,
-      filePath: savedFilePath, // Store file path in DB
+      filePath: savedFilePath,
+      fileName: newName,
       token, // Pass token for user authentication
     };
+
+    
 
     // Save the article in the database using your article controller
     const savedArticle = await addArticle(articleData);

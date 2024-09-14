@@ -1,5 +1,5 @@
-import { connectDB } from '../db/index';
-import { updateUserPass } from '../controllers/updateUserPasswordController';
+import { connectDB } from '../../db/index';
+import { updateUserPass } from '../../controllers/updateUserPasswordController';
 
 export async function POST(req: Request) {
     await connectDB();
