@@ -25,6 +25,8 @@ export async function POST(req: Request) {
     const description = formData.get("description")?.toString() || "";
     const category = formData.get("category")?.toString() || "";
     const token = formData.get("token")?.toString() || ""; // Assuming JWT token is passed for authentication
+    const likes = formData.get('likes')?.toString() || '';
+    const dislike = formData.get('dislike')?.toString() || '';
 
     // Validate that required fields are present
     if (!file) {
@@ -62,6 +64,8 @@ export async function POST(req: Request) {
       category,
       filePath: savedFilePath,
       fileName: newName,
+      likes,
+      dislike,
       token, // Pass token for user authentication
     };
 

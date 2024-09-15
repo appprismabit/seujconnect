@@ -30,8 +30,6 @@ export async function POST(req: Request) {
             articleId,
         };
 
-        // Log the newComment object for debugging
-        console.log('New Comment Data:', newComment);
 
         // Call the controller to add the comment
         const result = await addArticleComment(newComment);
@@ -53,4 +51,4 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
-}
+}1

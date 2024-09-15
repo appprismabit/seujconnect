@@ -1,10 +1,10 @@
-import AuthorArticles from "@/dashboard/instructor-dashboard/AuthorArticles";
+import SingleArticle from "@/dashboard/instructor-dashboard/singleArticle";
 import Wrapper from "@/layouts/Wrapper";
 
 const index = () => {
    return (
       <Wrapper>
-         <AuthorArticles />
+         <SingleArticle />
       </Wrapper>
    )
 }

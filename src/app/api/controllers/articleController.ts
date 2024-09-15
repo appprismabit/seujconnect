@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import registerArticleModel from "../models/articleModel";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import mongoose from 'mongoose';
+import { registerUser } from "./userController";
+import RegistrationForm from "@/forms/RegistrationForm";
 
 
 export async function addArticle(body: any) {
@@ -25,12 +27,15 @@ export async function addArticle(body: any) {
       userId,
     });
 
+    //console.log(newArticle);
+
 
 
 
 
     // Save the new article to the database
-    await newArticle.save();
+    const result = await newArticle.save();
+    console.log(result);
 
     return { message: "Article added successfully" };
   } catch (error: any) {
@@ -85,23 +90,18 @@ export async function delArticleById(body: any) {
 }
 
 export async function addArticleContent(body: any) {
-  // Decode the JWT token to extract user details
-  // const decoded = jwt.decode(body.token);
+
   const _id = body.articleId;
 
-  // let userId: string | undefined;
 
-  // if (decoded && typeof decoded !== "string") {
-  //   userId = (decoded as JwtPayload)?.user?._id; // Accessing the user's ID from the token
-  // }
   if (!_id) {
     throw new Error("Article id not found");
   }
   try {
     const updatedArticle = await registerArticleModel.findOneAndUpdate(
-      { _id }, // Find the article by userId
-      { $push: { content: { $each: body.content } } }, // Use $push to append to the content array
-      { new: true, runValidators: true } // Return the updated document and run schema validators
+      { _id },
+      { $push: { content: { $each: body.content } } },
+      { new: true, runValidators: true }
     );
 
 
@@ -234,7 +234,7 @@ export async function updateArticleContent(body: any) {
 
 export async function addArticleComment(body: any) {
   const _id = body.articleId;
-  console.log("this is the comment body " + JSON.stringify(body));
+
 
   if (_id) {
     try {
@@ -247,13 +247,66 @@ export async function addArticleComment(body: any) {
         throw new Error('Article not found');
       }
       return result;
-    }catch(error: any){
+    } catch (error: any) {
       console.error("Error adding comments: This is already taken");
-    throw new Error(error.message);
+      throw new Error(error.message);
     }
-    
+
   }
 };
+
+
+
+
+export async function updateLikeDislikeCounts(articleId: string, status: string) {
+
+  const _id = articleId;
+  // console.log(_id);
+
+
+  try {
+    if (status === '1') {
+      const result = await registerArticleModel.findByIdAndUpdate(
+        _id,
+        { $inc: { likes: 1 } }, // Increment likes by 1
+        { new: true } // Return the updated document
+      ).exec();
+
+
+
+      if (!result) {
+        throw new Error('Article not found');
+      }
+
+      return {
+        message: 'Like count updated successfully',
+        updatedArticle: result,
+      };
+    } else if (status === '0') {
+      const result = await registerArticleModel.findByIdAndUpdate(
+        _id,
+        { $inc: { dislike: 1 } }, // Increment dislike by 1
+        { new: true } // Return the updated document
+      ).exec();
+
+
+
+      if (!result) {
+        throw new Error('Article not found');
+      }
+
+      return {
+        message: 'Like count updated successfully',
+        updatedArticle: result,
+    }
+  }
+
+
+  } catch (error: any) {
+    console.error('Error updating like count:', error);
+    throw new Error(error.message);
+  }
+}
 
 
 

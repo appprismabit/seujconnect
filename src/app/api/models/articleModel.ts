@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-// Interface for Content Block (used inside the article content array)
+
 interface IContentBlock {
   type: 'heading' | 'paragraph' | 'image' | 'blockquote';
   level?: number;  // For headings, optional
@@ -9,25 +9,11 @@ interface IContentBlock {
   alt?: string;    // Alternative text for images
 }
 
-// Interface for Comment Block
+
 interface ICommentBlock {
-  text?: string; 
+  text?: string;
   phoneNumber?: string;
 }
-
-// Interface to define the structure of an article document
-interface IArticle extends Document {
-  title?: string;  // Optional
-  description?: string; // Optional
-  category?: string; // Optional
-  userId: string; // Required
-  filePath?: string; 
-  fileName?: string; // Optional field to store the file name
-  content: IContentBlock[]; // Array of content blocks
-  comments: ICommentBlock[]; // Array of comment blocks
-}
-
-// Schema for Comment Block
 const commentBlockSchema: Schema<ICommentBlock> = new Schema({
   text: {
     type: String,
@@ -48,33 +34,50 @@ const contentBlockSchema: Schema<IContentBlock> = new Schema({
   },
   level: {
     type: Number,
-    required: function() { return this.type === 'heading'; } // Required for headings
+    required: function () { return this.type === 'heading'; } // Required for headings
   },
   text: {
     type: String,
-    required: function() { return this.type !== 'image'; } // Required for non-image types
+    required: function () { return this.type !== 'image'; } // Required for non-image types
   },
   src: {
     type: String,
-    required: function() { return this.type === 'image'; } // Required for images
+    required: function () { return this.type === 'image'; } // Required for images
   },
   alt: {
     type: String,
-    required: function() { return this.type === 'image'; } // Required for images
+    required: function () { return this.type === 'image'; } // Required for images
   }
 });
 
+
+
+interface IArticle extends Document {
+  title?: string;  // Optional
+  description?: string; // Optional
+  category?: string; // Optional
+  userId: string; // Required
+  filePath?: string;
+  fileName?: string;
+  likes?: number;  // Single object instead of array
+  dislike?: number;
+  content: IContentBlock[]; // Array of content blocks
+  comments: ICommentBlock[]; // Array of comment blocks
+}
+
 // Schema for Article
 const articleSchema: Schema<IArticle> = new Schema({
-  title: { type: String, default: null }, // Optional
-  description: { type: String, default: null }, // Optional
-  category: { type: String, default: null }, // Optional
-  userId: { type: String, required: true }, // Required
-  filePath: { type: String, default: null }, 
-  fileName: { type: String, default: null }, // Optional
-  content: [contentBlockSchema], // Array of content blocks
-  comments: [commentBlockSchema] // Array of comment blocks
-}, { timestamps: true }); // Automatically adds createdAt and updatedAt timestamps
+  title: { type: String, default: null },
+  description: { type: String, default: null },
+  category: { type: String, default: null },
+  userId: { type: String, required: true },
+  filePath: { type: String, default: null },
+  fileName: { type: String, default: null },
+  likes: { type: Number, default: 0 },
+  dislike: { type: Number, default: 0 },
+  content: [contentBlockSchema],
+  comments: [commentBlockSchema]
+}, { timestamps: true });
 
 // Register the article model, or use the existing one if already registered
 const ArticleModel: Model<IArticle> =
