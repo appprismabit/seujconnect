@@ -37,9 +37,7 @@ export async function POST(req: Request) {
       .sort({ _id: -1 }) // Sort by _id in descending order to get the most recent document
       .exec();
     
-    //const uniqueName = lastArticle?._id + "";
-
-    //const uniqueName = lastArticle?._id.toString();
+    
     if (typeof lastArticle === null) {
       console.log("Khumaisu");
       let lastArticle: { _id?: string } | undefined;
@@ -51,7 +49,7 @@ export async function POST(req: Request) {
     const newName = 'AR-TH' + lastArticle?._id + '.' + fileExtension;
 
     //let userDetails = await registerArticleModel.findOne({  })
-    let userDetails = await registerArticleModel.find({ userId }).exec();
+    
 
 
     // Save the file using the helper method and handle stream

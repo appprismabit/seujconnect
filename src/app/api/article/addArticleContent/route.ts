@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '../../db/index';
 import { addArticleContent } from '../../controllers/articleController';
+import FileHelper from "../../Helpers/FileUploadHelper";
 import registerArticleModel from '../../models/articleModel';
 
 export const config = {
@@ -22,8 +23,9 @@ export async function POST(req: Request) {
     const type = formData.get('content[type]')?.toString() || '';
     const level = formData.get('content[level]')?.toString() || '';
     const text = formData.get('content[text]')?.toString() || '';
-    const src = formData.get('content[src]')?.toString() || '';
+    const src = formData.get('content[src]') as File;
     const alt = formData.get('content[alt]')?.toString() || '';
+    const articleId = formData.get('articleId')?.toString() || '';
 
     const contentBlock: any = { type };
 
@@ -33,7 +35,14 @@ export async function POST(req: Request) {
     }
 
     if (type === 'image' && src) {
-      contentBlock.src = src;
+      let lastArticle = await registerArticleModel.findOne({})
+      .sort({ _id: -1 }) // Sort by _id in descending order to get the most recent document
+      .exec();
+      const fileName = src.name;
+    const fileExtension = fileName.split('.').pop();
+    const newName = 'AR-TH' + lastArticle?._id + '.' + fileExtension;
+    const savedFilePath = await FileHelper.saveFile(src.stream(), newName, "uploads/artclecontent");
+      contentBlock.src = newName;
       contentBlock.alt = alt;
     } else if (text) {
       contentBlock.text = text;
@@ -47,7 +56,7 @@ export async function POST(req: Request) {
 
     const newArticle = {
       content: contentArray,
-      token,
+      articleId,
     };
     
 
