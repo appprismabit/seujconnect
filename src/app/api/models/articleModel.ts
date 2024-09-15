@@ -9,36 +9,37 @@ interface IContentBlock {
   alt?: string;    // Alternative text for images
 }
 
-interface ICommentBlock{
+// Interface for Comment Block
+interface ICommentBlock {
   text?: string; 
   phoneNumber?: string;
 }
 
 // Interface to define the structure of an article document
-interface IaddArticle extends Document {
+interface IArticle extends Document {
   title?: string;  // Optional
   description?: string; // Optional
   category?: string; // Optional
-  userId: string;
+  userId: string; // Required
   filePath?: string; 
-  fileName?: string;// Optional field to store the file path
+  fileName?: string; // Optional field to store the file name
   content: IContentBlock[]; // Array of content blocks
-  comments: ICommentBlock[];
+  comments: ICommentBlock[]; // Array of comment blocks
 }
+
+// Schema for Comment Block
 const commentBlockSchema: Schema<ICommentBlock> = new Schema({
- 
- 
   text: {
     type: String,
-    required: false  
+    required: false
   },
- 
   phoneNumber: {
     type: String,
-    required: false 
+    required: false
   }
 });
-// Define the schema for content blocks
+
+// Schema for Content Block
 const contentBlockSchema: Schema<IContentBlock> = new Schema({
   type: {
     type: String,
@@ -63,25 +64,21 @@ const contentBlockSchema: Schema<IContentBlock> = new Schema({
   }
 });
 
-// Define the schema for the article model
-const articleSchema: Schema<IaddArticle> = new Schema(
-  {
-    title: { type: String, default: null }, // Optional
-    description: { type: String, default: null }, // Optional
-    category: { type: String, default: null }, // Optional
-    userId: { type: String, required: true },
-    filePath: { type: String, default: null }, 
-    fileName: { type: String, default: null }, // Optional field to store file path
-    content: [contentBlockSchema], // Array of content blocks
-    comments: [commentBlockSchema]
-  },
-  { timestamps: true } // Automatically adds createdAt and updatedAt timestamps
-);
+// Schema for Article
+const articleSchema: Schema<IArticle> = new Schema({
+  title: { type: String, default: null }, // Optional
+  description: { type: String, default: null }, // Optional
+  category: { type: String, default: null }, // Optional
+  userId: { type: String, required: true }, // Required
+  filePath: { type: String, default: null }, 
+  fileName: { type: String, default: null }, // Optional
+  content: [contentBlockSchema], // Array of content blocks
+  comments: [commentBlockSchema] // Array of comment blocks
+}, { timestamps: true }); // Automatically adds createdAt and updatedAt timestamps
 
 // Register the article model, or use the existing one if already registered
-const registerArticleModel: Model<IaddArticle> =
-  mongoose.models.Article ||
-  mongoose.model<IaddArticle>("Article", articleSchema);
+const ArticleModel: Model<IArticle> =
+  mongoose.models.Article || mongoose.model<IArticle>("Article", articleSchema);
 
-export default registerArticleModel;
-export type { IaddArticle, IContentBlock, ICommentBlock };
+export default ArticleModel;
+export type { IArticle, IContentBlock, ICommentBlock };

@@ -72,7 +72,7 @@ export async function getArticles() {
 
 export async function delArticleById(body: any) {
   const articleId = body.articleId;
- 
+
   const deletedArticle = await registerArticleModel.findByIdAndDelete(articleId);
   if (!deletedArticle) {
     throw new Error('Article  found');
@@ -200,36 +200,60 @@ export async function updateArticleContent(body: any) {
   const newContent = body.content;
 
   if (!articleId || !contentId || !newContent) {
-      throw new Error('Required parameters are missing.');
+    throw new Error('Required parameters are missing.');
   }
 
   try {
-      const result = await registerArticleModel.findOneAndUpdate(
-          { 
-              _id: articleId, 
-              'content._id': contentId // Find the article and the specific content item
-          },
-          {
-              $set: {
-                  'content.$': newContent // Update the specific content item
-              }
-          },
-          { 
-              new: true, 
-              runValidators: true 
-          }
-      );
-
-      if (!result) {
-          throw new Error("No article or content found for the given IDs.");
+    const result = await registerArticleModel.findOneAndUpdate(
+      {
+        _id: articleId,
+        'content._id': contentId // Find the article and the specific content item
+      },
+      {
+        $set: {
+          'content.$': newContent // Update the specific content item
+        }
+      },
+      {
+        new: true,
+        runValidators: true
       }
+    );
 
-      return result;
+    if (!result) {
+      throw new Error("No article or content found for the given IDs.");
+    }
+
+    return result;
   } catch (error: any) {
-      console.error('Error updating article content:', error);
-      throw new Error('Error updating article content');
+    console.error('Error updating article content:', error);
+    throw new Error('Error updating article content');
   }
-}
+};
+
+
+export async function addArticleComment(body: any) {
+  const _id = body.articleId;
+  console.log("this is the comment body " + JSON.stringify(body));
+
+  if (_id) {
+    try {
+      const result = await registerArticleModel.findOneAndUpdate(
+        { _id },
+        { $push: { comments: { $each: body.comment } } },
+        { new: true, runValidators: true }
+      );
+      if (!result) {
+        throw new Error('Article not found');
+      }
+      return result;
+    }catch(error: any){
+      console.error("Error adding comments: This is already taken");
+    throw new Error(error.message);
+    }
+    
+  }
+};
 
 
 
