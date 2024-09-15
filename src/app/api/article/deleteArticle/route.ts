@@ -14,11 +14,13 @@ export async function POST(req: Request) {
         const formData = await req.formData();
 
         const articleId = formData.get('articleId')?.toString() || "";
+       console.log(articleId);
 
         if (!articleId) {
-            return NextResponse.json({ error: 'File is missing' }, { status: 400 });
+            return NextResponse.json({ error: 'Article Id is missing' }, { status: 400 });
         }
         const result = await delArticleById({articleId});
+
         return NextResponse.json(result, { status: 200 });
     } catch (error: any) {
         console.error("Error handling article upload:", error);

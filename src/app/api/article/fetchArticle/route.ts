@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getArticlesByUserId } from '../../controllers/articleController';
 import { connectDB } from '../../db';
 import registerArticleModel from '../../models/articleModel'
+import User from '../../models/Users';
 
 export const config = {
   api: {
@@ -22,8 +23,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
     if (!userId) {
       const fetchAllArticles = await registerArticleModel.find();
-      return NextResponse.json(fetchAllArticles, { status: 200 });
-    }
+      
+      // Fetch usernames for all articles
+      const articlesWithUsernames = await Promise.all(fetchAllArticles.map(async (article) => {
+          const user = await User.findById(article.userId);
+          return {
+              ...article.toObject(), // Convert to plain object
+              userFirstName: user ? user.fname : 'Unknown', // Add username to article
+              userLastName: user ? user.lname : 'Unknown', // Add username to article
+
+          };
+      }));
+      
+      return NextResponse.json(articlesWithUsernames, { status: 200 });
+  }
 
 
     const articles = await getArticlesByUserId({ userId });

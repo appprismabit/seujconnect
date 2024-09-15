@@ -3,6 +3,7 @@ import { connectDB } from "../../db/index";
 import { addArticle } from "../../controllers/articleController";
 import FileHelper from "../../Helpers/FileUploadHelper";
 import registerArticleModel from "../../models/articleModel";
+import { register } from "module";
 
 
 // Disable the default body parser
@@ -32,17 +33,26 @@ export async function POST(req: Request) {
     if (!title || !description || !category) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
-    const lastArticle = await registerArticleModel.findOne({})
+    let lastArticle = await registerArticleModel.findOne({})
       .sort({ _id: -1 }) // Sort by _id in descending order to get the most recent document
-      .exec(); 
-
-      //const uniqueName = lastArticle?._id + "";
-
-     
+      .exec();
     
+    //const uniqueName = lastArticle?._id + "";
+
+    //const uniqueName = lastArticle?._id.toString();
+    if (typeof lastArticle === null) {
+      console.log("Khumaisu");
+      let lastArticle: { _id?: string } | undefined;
+      lastArticle = { _id: "G_style" }; 
+      console.log(lastArticle);
+    }
     const fileName = file.name;
     const fileExtension = fileName.split('.').pop();
-    const newName = 'AR-TH' + lastArticle?._id +  '.' + fileExtension;
+    const newName = 'AR-TH' + lastArticle?._id + '.' + fileExtension;
+
+    //let userDetails = await registerArticleModel.findOne({  })
+    let userDetails = await registerArticleModel.find({ userId }).exec();
+
 
     // Save the file using the helper method and handle stream
     const savedFilePath = await FileHelper.saveFile(file.stream(), newName, "uploads/articlethumb");
@@ -57,7 +67,7 @@ export async function POST(req: Request) {
       token, // Pass token for user authentication
     };
 
-    
+
 
     // Save the article in the database using your article controller
     const savedArticle = await addArticle(articleData);
