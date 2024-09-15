@@ -1,70 +1,74 @@
-"use client";
+"use client"; // Required for Next.js client-side components
 import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation"; // Correct import for Next.js navigation in client components
-import { RootState } from "@/redux/store";
-import { UserDetails } from "@/data/dashboard-data/UserData";
-import { initializeToken } from "@/redux/features/authSlice";
+import { useRouter } from "next/navigation"; // For router navigation
+import Image from "next/image"; // For image rendering
+import Link from "next/link"; // For links
 
 const SingleArticleContent = () => {
    const [article, setArticle] = useState<any>(null); // State to store the fetched article
    const [error, setError] = useState<string | null>(null); // State to store error messages
-   const [isMounted, setIsMounted] = useState(false); // To check if the component is mounted
-   const dispatch = useDispatch();
-   const router = useRouter(); // Access the router for article ID
+   const [isLoading, setIsLoading] = useState(true); // Loading state
 
-   const userDetails = useSelector(
-      (state: RootState) => state.auth.user
-   ) as UserDetails | null;
+   const router = useRouter(); // Access the router for query params
 
-   // Ensure component is mounted before accessing useRouter
+   // Fetch the article ID from the URL when the component mounts
    useEffect(() => {
+      // Check if window object is available (client-side)
       if (typeof window !== "undefined") {
-         setIsMounted(true); // Mark component as mounted
-         dispatch(initializeToken());
-      }
-   }, [dispatch]);
-
-   useEffect(() => {
-      if (isMounted) {
-         const articleId = new URLSearchParams(window.location.search).get("articleId"); // Get article ID from query
+         const articleId = new URLSearchParams(window.location.search).get("articleId"); // Get articleId from URL
          if (articleId) {
-            fetchArticleById(articleId); // Fetch the article when ID is available
+            fetchArticleById(articleId);
+         } else {
+            setError("Article ID not found in URL.");
          }
       }
-   }, [isMounted]); // Depend on isMounted to fetch article after component mounts
+   }, []);
 
+   // Fetch the article from the API
    const fetchArticleById = async (id: string) => {
       try {
-         const response = await fetch(`http://localhost:3000/api/article/fetchArticle`, {
+         const response = await fetch(`http://localhost:3000/api/article/fetchSingleArticle`, {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
             },
-            body: JSON.stringify({ articleID: id }), // Pass the article ID
+            body: JSON.stringify({ articleID: id }),
          });
-
+   
+         console.log("API Response:", response); // Log the response
          if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
          }
-
-         const data = await response.json();
-         console.log("Fetched article data:", data); // Log data for debugging
-         setArticle(data); // Update state with the fetched article
+   
+         const { data } = await response.json();
+         console.log("Fetched article data:", data);
+         if (data.length > 0) {
+            setArticle(data[0]);
+         } else {
+            setError("No article found.");
+         }
       } catch (error) {
          console.error("Error fetching article:", error);
          setError("Error fetching article. Please try again later.");
+      } finally {
+         setIsLoading(false);
       }
    };
+   
 
+   // Handle loading state
+   if (isLoading) {
+      return <p>Loading...</p>;
+   }
+
+   // Handle error state
    if (error) {
       return <p className="error-message">{error}</p>;
    }
 
+   // Handle case where no article is found
    if (!article) {
-      return <p>Loading...</p>; // Loading state
+      return <p>No article found.</p>;
    }
 
    return (
@@ -78,38 +82,44 @@ const SingleArticleContent = () => {
                   <div className="article__details-wrap mb-40">
                      <div className="article__item article__item-two shine__animate-item">
                         <div className="article__item-thumb article__item-thumb-two">
-                           <Link href={`/article-details/${article._id}`} className="shine__animate-link">
-                              {article.fileName ? (
-                                 <Image
-                                    src={`/uploads/articlethumb/${article.fileName}`}
-                                    alt={article.title}
-                                    width={800}
-                                    height={400}
-                                    layout="responsive"
-                                 />
-                              ) : (
-                                 <Image
-                                    src="/default-image.png"
-                                    alt="Default image"
-                                    width={800}
-                                    height={400}
-                                    layout="responsive"
-                                 />
-                              )}
-                           </Link>
+                           {/* Show image if available, otherwise default */}
+                           {article.fileName && article.fileName !== "AR-THundefined.jpg" ? (
+                              <Image
+                                 src={`/uploads/articlethumb/${article.fileName}`}
+                                 alt={article.title}
+                                 width={800}
+                                 height={400}
+                                 layout="responsive"
+                              />
+                           ) : (
+                              <Image
+                                 src="/default-image.png"
+                                 alt="Default image"
+                                 width={800}
+                                 height={400}
+                                 layout="responsive"
+                              />
+                           )}
                         </div>
                         <div className="article__item-content article__item-content-two">
                            <ul className="article__item-meta list-wrap">
                               <li className="article__item-tag">
+                                 {/* Link to article category */}
                                  <Link href={`/article-category/${article.category}`}>{article.category}</Link>
                               </li>
                            </ul>
+                           {/* Display article title */}
                            <h5 className="title">
-                              <Link href={`/article-details/${article._id}`}>{article.title}</Link>
+                              {article.title}
                            </h5>
+                           {/* Display article description */}
                            <p className="description">{article.description}</p>
-                           <p className="author">
-                              By <Link href="#">{userDetails?.fname} {userDetails?.lname}</Link>
+                           {/* Show additional article information if available */}
+                           <p className="created-at">
+                              Created on: {new Date(article.createdAt).toLocaleDateString()}
+                           </p>
+                           <p className="updated-at">
+                              Last updated: {new Date(article.updatedAt).toLocaleDateString()}
                            </p>
                         </div>
                      </div>

@@ -9,6 +9,11 @@ interface IContentBlock {
   alt?: string;    // Alternative text for images
 }
 
+interface ICommentBlock{
+  text?: string; 
+  phoneNumber?: string;
+}
+
 // Interface to define the structure of an article document
 interface IaddArticle extends Document {
   title?: string;  // Optional
@@ -18,8 +23,21 @@ interface IaddArticle extends Document {
   filePath?: string; 
   fileName?: string;// Optional field to store the file path
   content: IContentBlock[]; // Array of content blocks
+  comments: ICommentBlock[];
 }
-
+const commentBlockSchema: Schema<ICommentBlock> = new Schema({
+ 
+ 
+  text: {
+    type: String,
+    required: false  
+  },
+ 
+  phoneNumber: {
+    type: String,
+    required: false 
+  }
+});
 // Define the schema for content blocks
 const contentBlockSchema: Schema<IContentBlock> = new Schema({
   type: {
@@ -55,6 +73,7 @@ const articleSchema: Schema<IaddArticle> = new Schema(
     filePath: { type: String, default: null }, 
     fileName: { type: String, default: null }, // Optional field to store file path
     content: [contentBlockSchema], // Array of content blocks
+    comments: [commentBlockSchema]
   },
   { timestamps: true } // Automatically adds createdAt and updatedAt timestamps
 );
@@ -65,4 +84,4 @@ const registerArticleModel: Model<IaddArticle> =
   mongoose.model<IaddArticle>("Article", articleSchema);
 
 export default registerArticleModel;
-export type { IaddArticle, IContentBlock };
+export type { IaddArticle, IContentBlock, ICommentBlock };

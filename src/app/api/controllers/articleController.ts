@@ -72,7 +72,7 @@ export async function getArticles() {
 
 export async function delArticleById(body: any) {
   const articleId = body.articleId;
-  console.log(articleId);
+ 
   const deletedArticle = await registerArticleModel.findByIdAndDelete(articleId);
   if (!deletedArticle) {
     throw new Error('Article  found');
@@ -86,26 +86,27 @@ export async function delArticleById(body: any) {
 
 export async function addArticleContent(body: any) {
   // Decode the JWT token to extract user details
-  const decoded = jwt.decode(body.token);
+  // const decoded = jwt.decode(body.token);
+  const _id = body.articleId;
 
-  let userId: string | undefined;
+  // let userId: string | undefined;
 
-  if (decoded && typeof decoded !== "string") {
-    userId = (decoded as JwtPayload)?.user?._id; // Accessing the user's ID from the token
-  }
-  if (!userId) {
-    throw new Error("User ID not found in token");
+  // if (decoded && typeof decoded !== "string") {
+  //   userId = (decoded as JwtPayload)?.user?._id; // Accessing the user's ID from the token
+  // }
+  if (!_id) {
+    throw new Error("Article id not found");
   }
   try {
     const updatedArticle = await registerArticleModel.findOneAndUpdate(
-      { userId }, // Find the article by userId
+      { _id }, // Find the article by userId
       { $push: { content: { $each: body.content } } }, // Use $push to append to the content array
       { new: true, runValidators: true } // Return the updated document and run schema validators
     );
 
 
     if (!updatedArticle) {
-      throw new Error("No article found for this user.");
+      throw new Error("No article found for this article id.");
     }
 
     return {
@@ -126,7 +127,7 @@ export async function removeArticleContent(body: any) {
   const contentIdToRemove = body.contentIdToRemove;
 
   try {
-    
+
 
     // Use findByIdAndUpdate with $pull to remove content
     const updatedArticle = await registerArticleModel.findByIdAndUpdate(
@@ -145,7 +146,92 @@ export async function removeArticleContent(body: any) {
     console.error('Error removing article content:', error);
     return NextResponse.json({ success: false, message: 'Error removing article content' }, { status: 500 });
   }
+};
+
+export async function getSingleArticleById(articleId: string) {
+
+  const _id = articleId;
+  // console.log("Perfect id " +_id)
+
+  try {
+    const fetchSingleArticledata = await registerArticleModel.find({ _id }).exec();
+    // console.log(fetchSingleArticledata);
+
+    if (!fetchSingleArticledata) {
+      throw new Error('Data is unavailable');
+    }
+    return fetchSingleArticledata;
+
+  } catch (error: any) {
+    console.error('Error fetching single article', error);
+    return NextResponse.json({ success: false, message: 'Error fetching single article' }, { status: 500 });
+  }
+};
+
+export async function updateArticle(body: any) {
+  console.log('From the body ' + JSON.stringify(body));
+  const { formValues } = body;
+  const _id = formValues.articleId;
+
+  if (!_id || typeof _id === 'undefined' || _id === null) {
+    throw new Error('Please provide the ID.');
+  }
+
+  // Remove the articleId from formValues because it is not a field to update
+  const { articleId, ...updateFields } = formValues;
+
+  // Use `$set` operator to update only the specified fields
+  const updateArticleById = await registerArticleModel.findByIdAndUpdate(
+    _id,
+    { $set: updateFields },
+    { new: true, runValidators: true }
+  );
+
+  if (!updateArticleById) {
+    throw new Error('Article not found.');
+  }
+
+  return updateArticleById;
 }
+
+export async function updateArticleContent(body: any) {
+  const articleId = body.articleId;
+  const contentId = body.contentId;
+  const newContent = body.content;
+
+  if (!articleId || !contentId || !newContent) {
+      throw new Error('Required parameters are missing.');
+  }
+
+  try {
+      const result = await registerArticleModel.findOneAndUpdate(
+          { 
+              _id: articleId, 
+              'content._id': contentId // Find the article and the specific content item
+          },
+          {
+              $set: {
+                  'content.$': newContent // Update the specific content item
+              }
+          },
+          { 
+              new: true, 
+              runValidators: true 
+          }
+      );
+
+      if (!result) {
+          throw new Error("No article or content found for the given IDs.");
+      }
+
+      return result;
+  } catch (error: any) {
+      console.error('Error updating article content:', error);
+      throw new Error('Error updating article content');
+  }
+}
+
+
 
 
 

@@ -23,20 +23,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
     if (!userId) {
       const fetchAllArticles = await registerArticleModel.find();
-      
+
       // Fetch usernames for all articles
       const articlesWithUsernames = await Promise.all(fetchAllArticles.map(async (article) => {
-          const user = await User.findById(article.userId);
-          return {
-              ...article.toObject(), // Convert to plain object
-              userFirstName: user ? user.fname : 'Unknown', // Add username to article
-              userLastName: user ? user.lname : 'Unknown', // Add username to article
+        const user = await User.findById(article.userId);
+        return {
+          ...article.toObject(), // Convert to plain object
+          userName: user ? user.fname + " " + user.lname : 'Unknown', // Add username to article
+          //  userLastName: user ? user.lname : 'Unknown', // Add username to article
 
-          };
+        };
       }));
-      
+
       return NextResponse.json(articlesWithUsernames, { status: 200 });
-  }
+    }
 
 
     const articles = await getArticlesByUserId({ userId });

@@ -109,45 +109,48 @@ const AuthorArticlesContent = ({ style }: any) => {
                               className="swiper dashboard-courses-active"
                            >
                               {articles.map((article) => (
-                                 <SwiperSlide key={article._id} className="swiper-slide">
-                                    <div className="courses__item courses__item-two shine__animate-item">
-                                       <div className="courses__item-thumb courses__item-thumb-two">
-                                          <Link href="/article-details" className="shine__animate-link">
-                                             {article.fileName ? (
-                                                <Image
-                                                   src={`/uploads/articlethumb/${article.fileName}`}
-                                                   alt={article.title}
-                                                   width={300}
-                                                   height={200}
-                                                   layout="responsive"
-                                                />
-                                             ) : (
-                                                <Image
-                                                   src="/default-image.png"
-                                                   alt="Default image"
-                                                   width={300}
-                                                   height={200}
-                                                   layout="responsive"
-                                                />
-                                             )}
-                                          </Link>
-                                       </div>
-                                       <div className="courses__item-content courses__item-content-two">
-                                          <ul className="courses__item-meta list-wrap">
-                                             <li className="courses__item-tag">
-                                                <Link href="/article-category">{article.category}</Link>
-                                             </li>
-                                          </ul>
-                                          <h5 className="title">
-                                             <Link href="/article-details">{article.title}</Link>
-                                          </h5>
-                                          <p className="description">{article.description}</p>
-                                          <p className="author">
-                                             By <Link href="#">{userDetails?.fname} {userDetails?.lname}</Link>
-                                          </p>
-                                       </div>
-                                    </div>
-                                 </SwiperSlide>
+                              <SwiperSlide key={article._id} className="swiper-slide">
+                              <div className="courses__item courses__item-two shine__animate-item">
+                                 <div className="courses__item-thumb courses__item-thumb-two">
+                                    {/* Use article._id in the href */}
+                                    <Link href={`/article-details?articleId=${article._id}`} className="shine__animate-link">
+                                       {article.fileName ? (
+                                          <Image
+                                             src={`/uploads/articlethumb/${article.fileName}`}
+                                             alt={article.title}
+                                             width={300}
+                                             height={200}
+                                             layout="responsive"
+                                          />
+                                       ) : (
+                                          <Image
+                                             src="/default-image.png"
+                                             alt="Default image"
+                                             width={300}
+                                             height={200}
+                                             layout="responsive"
+                                          />
+                                       )}
+                                    </Link>
+                                 </div>
+                                 <div className="courses__item-content courses__item-content-two">
+                                    <ul className="courses__item-meta list-wrap">
+                                       <li className="courses__item-tag">
+                                          <Link href={`/article-category/${article.category}`}>{article.category}</Link>
+                                       </li>
+                                    </ul>
+                                    <h5 className="title">
+                                       {/* Include article._id in the details page link */}
+                                       <Link href={`/article-details?articleId=${article._id}`}>{article.title}</Link>
+                                    </h5>
+                                    <p className="description">{article.description}</p>
+                                    <p className="author">
+                                       By <Link href="#">{userDetails?.fname} {userDetails?.lname}</Link>
+                                    </p>
+                                 </div>
+                              </div>
+                           </SwiperSlide>
+                           
                               ))}
                            </Swiper>
                         </div>
