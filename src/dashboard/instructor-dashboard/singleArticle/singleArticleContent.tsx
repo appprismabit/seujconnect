@@ -1,76 +1,67 @@
-"use client"; // Required for Next.js client-side components
+"use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // For router navigation
-import Image from "next/image"; // For image rendering
-import Link from "next/link"; // For links
-
+import Image from "next/image";
+import Link from "next/link";
 const SingleArticleContent = () => {
-   const [article, setArticle] = useState<any>(null); // State to store the fetched article
-   const [error, setError] = useState<string | null>(null); // State to store error messages
-   const [isLoading, setIsLoading] = useState(true); // Loading state
-
-   const router = useRouter(); // Access the router for query params
-
-   // Fetch the article ID from the URL when the component mounts
+   const [article, setArticle] = useState<any>(null);
+   const [error, setError] = useState<string | null>(null);
+   const [isLoading, setIsLoading] = useState(true);
+   const articleId = "66e5708fb5ee6c28c92fff57";
    useEffect(() => {
-      // Check if window object is available (client-side)
-      if (typeof window !== "undefined") {
-         const articleId = new URLSearchParams(window.location.search).get("articleId"); // Get articleId from URL
-         if (articleId) {
-            fetchArticleById(articleId);
-         } else {
-            setError("Article ID not found in URL.");
-         }
+      if (articleId) {
+         fetchArticleById(articleId);
+      } else {
+         setError("Article ID not found.");
+         setIsLoading(false);
       }
-   }, []);
-
-   // Fetch the article from the API
+   }, [articleId]);
    const fetchArticleById = async (id: string) => {
       try {
          const response = await fetch(`http://localhost:3000/api/article/fetchSingleArticle`, {
             method: "POST",
             headers: {
-               "Content-Type": "application/json",
+               "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: JSON.stringify({ articleID: id }),
+            body: new URLSearchParams({
+               articleId: id,
+            }).toString(),
          });
-   
-         console.log("API Response:", response); // Log the response
+
          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
          }
-   
-         const { data } = await response.json();
-         console.log("Fetched article data:", data);
-         if (data.length > 0) {
-            setArticle(data[0]);
+
+         const resultText = await response.text();
+         const result = JSON.parse(resultText);
+
+         console.log("Fetched article data:", result); // Log the full response
+
+         if (result.success && result.data.length > 0) {
+            console.log("Article data:", result.data[0]); // Log the article itself
+            setArticle(result.data[0]); // Ensure you're accessing the correct data structure
          } else {
-            setError("No article found.");
+            setError(result.message || "No article found.");
          }
-      } catch (error) {
-         console.error("Error fetching article:", error);
+      } catch (error: any) {
+         console.error("Error fetching article:", error.message);
          setError("Error fetching article. Please try again later.");
       } finally {
          setIsLoading(false);
       }
    };
-   
 
-   // Handle loading state
+
+
+
    if (isLoading) {
       return <p>Loading...</p>;
    }
-
-   // Handle error state
    if (error) {
       return <p className="error-message">{error}</p>;
    }
-
-   // Handle case where no article is found
    if (!article) {
       return <p>No article found.</p>;
    }
-
    return (
       <div className="col-lg-9">
          <div className="dashboard__content-wrap dashboard__content-wrap-two">
@@ -82,7 +73,6 @@ const SingleArticleContent = () => {
                   <div className="article__details-wrap mb-40">
                      <div className="article__item article__item-two shine__animate-item">
                         <div className="article__item-thumb article__item-thumb-two">
-                           {/* Show image if available, otherwise default */}
                            {article.fileName && article.fileName !== "AR-THundefined.jpg" ? (
                               <Image
                                  src={`/uploads/articlethumb/${article.fileName}`}
@@ -100,21 +90,18 @@ const SingleArticleContent = () => {
                                  layout="responsive"
                               />
                            )}
+
                         </div>
                         <div className="article__item-content article__item-content-two">
                            <ul className="article__item-meta list-wrap">
                               <li className="article__item-tag">
-                                 {/* Link to article category */}
-                                 <Link href={`/article-category/${article.category}`}>{article.category}</Link>
+                                 <Link href={`/article-category/${article.category}`}>
+                                    {article.category}
+                                 </Link>
                               </li>
                            </ul>
-                           {/* Display article title */}
-                           <h5 className="title">
-                              {article.title}
-                           </h5>
-                           {/* Display article description */}
+                           <h5 className="title">{article.title}</h5>
                            <p className="description">{article.description}</p>
-                           {/* Show additional article information if available */}
                            <p className="created-at">
                               Created on: {new Date(article.createdAt).toLocaleDateString()}
                            </p>
@@ -130,5 +117,4 @@ const SingleArticleContent = () => {
       </div>
    );
 };
-
 export default SingleArticleContent;

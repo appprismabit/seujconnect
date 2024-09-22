@@ -22,7 +22,6 @@ interface MenuItem {
   }[];
 }
 [];
-
 const menu_data: MenuItem[] = [
   {
     id: 1,
@@ -74,7 +73,6 @@ const menu_data: MenuItem[] = [
       { link: "/not-found", title: "Use of AI in agriculture" },
     ],
   },
-
   {
     id: 5,
     title: "Farmer Success Stories",

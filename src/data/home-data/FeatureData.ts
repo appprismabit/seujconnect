@@ -88,7 +88,7 @@ const feature_data: DataType[] = [
     id: 2,
     page: "home_2",
     icon_2: "assets/img/icons/h3_features_icon02.svg",
-    title: "SeujMart",
+    title: "Seuj Mart",
     desc: "An All-in-One Marketing Platfrom ",
   },
 
@@ -96,8 +96,8 @@ const feature_data: DataType[] = [
     id: 4,
     page: "home_2",
     icon_2: "assets/img/icons/h3_features_icon04.svg",
-    title: "SeujGuard",
-    desc: "A AI Driven Platform for Disaster Prevention",
+    title: "Seuj Guard",
+    desc: "An AI Driven Platform for Disaster Prevention",
   },
 
   // home_4

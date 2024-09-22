@@ -1,5 +1,4 @@
 import { StaticImageData } from "next/image";
-
 import instructor_img1 from "@/assets/img/instructor/h4_instructor01.jpg"
 import instructor_img2 from "@/assets/img/instructor/h4_instructor02.jpg"
 import instructor_img3 from "@/assets/img/instructor/h4_instructor03.jpg"
@@ -8,7 +7,6 @@ import instructor_img5 from "@/assets/img/instructor/h5_instructor01.jpg"
 import instructor_img6 from "@/assets/img/instructor/h5_instructor02.jpg"
 import instructor_img7 from "@/assets/img/instructor/h5_instructor03.jpg"
 import instructor_img8 from "@/assets/img/instructor/h5_instructor04.jpg"
-
 interface DataType {
    id: number;
    page: string;
@@ -16,7 +14,6 @@ interface DataType {
    name: string;
    tag: string;
 }[];
-
 const instructor_data: DataType[] = [
    {
       id: 1,
@@ -46,9 +43,7 @@ const instructor_data: DataType[] = [
       name: "Joyful Zen",
       tag: "Pilates Instructor",
    },
-
    // home_5
-
    {
       id: 1,
       page: "home_5",
@@ -78,5 +73,4 @@ const instructor_data: DataType[] = [
       tag: "Sports Teacher",
    },
 ];
-
 export default instructor_data;
