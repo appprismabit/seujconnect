@@ -16,14 +16,13 @@ export async function POST(req: Request) {
     try {
         const formData = await req.formData();
         const token = formData.get('token')?.toString() || ""; // Corrected to call toString()
-
+       
         if (!token) {
             return NextResponse.json(
                 { error: 'Authorization token is required.' },
                 { status: 401 } // Unauthorized
             );
         }
-
         // Verify the token
        let userId;
         if (!JWT_SECRET) {
@@ -34,10 +33,8 @@ export async function POST(req: Request) {
         }
 
         try {
-            const decoded: any = jwt.verify(token, JWT_SECRET);
-            
+            const decoded: any = jwt.verify(token, JWT_SECRET);          
             userId = decoded?.user._id;
-            console.log('This is the userID '  +userId)
            
            
             

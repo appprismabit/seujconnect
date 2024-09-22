@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import registerArticleModel from "../models/articleModel";
+import User from '../models/Users';
 import jwt, { JwtPayload } from "jsonwebtoken";
 import mongoose from 'mongoose';
 import { registerUser } from "./userController";
-import RegistrationForm from "@/forms/RegistrationForm";
+
+
 
 
 export async function addArticle(body: any) {
@@ -41,35 +43,42 @@ export async function addArticle(body: any) {
   }
 };
 
-interface ArticleData {
-  userId: string;
+export async function getArticlesByUserId(userId? : string) {
+  const result = await registerArticleModel.findOne({userId}).exec();
+  return result;
 }
+/*
+  const articlesWithUsernames = await Promise.all(fetchAllArticles.map(async (article) => {
+        const user = await User.findById(article.userId);
+        return {
+          ...article.toObject(), // Convert to plain object
+          userName: user ? user.fname + " " + user.lname : 'Unknown', // Add username to article
+          //  userLastName: user ? user.lname : 'Unknown', // Add username to article
 
-export async function getArticlesByUserId({
-  userId,
-}: ArticleData): Promise<any[]> {
-  // Check if userId is provided
-  if (!userId) {
-    throw new Error("UserId is required");
-  }
+        };
+      }));
+*/
 
-  try {
 
-    const articles = await registerArticleModel.find({ userId }).exec();
-    return articles;
-  } catch (error) {
-    console.error('Error fetching articles:', error);
-    throw new Error('Failed to fetch articles');
-  }
-};
+
 
 export async function getArticles() {
-  const allArticles = await registerArticleModel.find({});
-  return {
-    message: 'All articles',
-    allArticles
+  try {
+      const article = await registerArticleModel.find({}).exec();
+      const articlesWithUsernames = await Promise.all(article.map(async(article)=>{
+        const user = await User.findById(article.userId);
+        return {
+          ...article.toObject(),
+          userName: user ? user.fname + " " + user.lname : 'Unknown',
+        }
+      }));
+      return articlesWithUsernames;
+  } catch (error) {
+      console.error("Error fetching articles:", error); 
+      throw new Error('Failed to fetch articles'); 
   }
 }
+
 
 export async function delArticleById(body: any) {
   const articleId = body.articleId;
@@ -284,33 +293,28 @@ export async function updateLikeDislikeCounts(articleId: string, status: string)
 
 export async function articleCount(userId?: string) {
   try {
+    const _id = userId;
+    // Fetch user details to get the role
+    const user = await User.findOne({ _id }, { role: 1 });
    
-    // First, fetch the user's role based on the userId
-    const user = await registerArticleModel.findOne({ userId }, { role: 1 }); // Assuming `role` field exists
-  
     if (!user) {
       throw new Error('User not found');
     }
+    const isAdmin = user.role === 0; // Check if the user is an admin
+    const matchStage = isAdmin ? [] : [{ $match: { userId } }]; // Adjust match stage based on role
 
-    const userRole = user.role; 
-
-    // Create a match stage based on the user's role
-    const matchStage = userRole === 0
-      ? [] // If role is 0, fetch all counts (no match)
-      : [{ $match: { userId } }]; // If role is not 0, fetch only user-specific counts
-
-    // Perform aggregation based on the match stage
+    // Aggregate counts based on role
     const counts = await registerArticleModel.aggregate([
-      ...matchStage, // Spread the match stage into the pipeline
+      ...matchStage,
       {
         $group: {
           _id: '$status', // Group by the numeric status field
           count: { $sum: 1 } // Count each document in the group
         }
       }
-    ]).exec(); // Execute the query
+    ]).exec(); // Ensure to execute the query
 
-    // Map status to human-readable format
+    // Mapping of status
     const statusMapping: { [key: number]: string } = {
       0: 'draft',
       1: 'request_for_approval',
@@ -326,13 +330,13 @@ export async function articleCount(userId?: string) {
       rejected: 0
     };
 
-    // Populate the result with counts
+    // Convert counts to more usable format
     counts.forEach(item => {
-      const statusKey = item._id as number;
-      const statusName = statusMapping[statusKey];
+      const statusKey = item._id as number; // Assuming _id is a number
+      const statusName = statusMapping[statusKey]; // Get the corresponding status name
 
       if (statusName) {
-        result[statusName] = item.count;
+        result[statusName] = item.count; // Assign the counts to the respective status name
       }
     });
 
@@ -342,6 +346,7 @@ export async function articleCount(userId?: string) {
     throw new Error('Failed to count articles');
   }
 }
+
 
 
 
@@ -372,13 +377,7 @@ export async function articleStatus(status: string, articleId: string) {
 }
 //Mir Kashem Ali
 //Kabyashree Buragohain
-//Alakesh Gogoi
-//Devaj Neogi
-//Himasree Das
-//Riza Debbarma 
-/*
 
-*/
 
 
 

@@ -43,36 +43,34 @@ const ArticleArea = ({ style }: any) => {
     setActiveTab(index);
   };
 
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
   // Function to fetch articles from the API
   const fetchArticles = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/article/fetchArticle`, {
-        method: 'POST', // Use POST method
-        headers: {
-          'Content-Type': 'application/json', // Set content type to JSON
-        },
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const response = await fetch(`${apiUrl}api/article/fetchAllArticle`, {
+        method: 'POST',
       });
-      console.log(response);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
 
       const data = await response.json();
-      setArticles(data); // Update state with the fetched articles
+     
+      setArticles(data.data); // Update state with the fetched articles
     } catch (error) {
       console.error("Error fetching articles:", error);
     }
   };
 
-  useEffect(() => {
-    fetchArticles();
-  }, []);
-
   return (
     <section
       className={`courses-area`}
-      style={{ backgroundImage: `url(/assets/img/bg/courses_bg.jpg )` }}
+      style={{ backgroundImage: `url(/assets/img/bg/courses_bg.jpg)` }}
     >
       <div className="container">
         <div className="section__title-wrap">
@@ -141,7 +139,7 @@ const ArticleArea = ({ style }: any) => {
                       </h5>
                       <p className="description">{article.description}</p>
                       <p className="author">
-                        By <Link href="#">{article.userFirstName} {article.userLastName}</Link>
+                        By <Link href="#">{article.userName} </Link>
                       </p>
                       <div className="courses__item-bottom">
                         <div className="button">

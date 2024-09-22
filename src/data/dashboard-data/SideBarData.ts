@@ -47,25 +47,25 @@ const sidebar_data: DataType[] = [
     sidebar_details: [
       {
         id: 1,
-        link: "author/author-dashboard",
+        link: "/author/author-dashboard",
         icon: "fas fa-home",
         title: "Dashboard",
       },
       {
         id: 2,
-        link: "author/author-profile",
+        link: "/author/author-profile",
         icon: "skillgro-avatar",
         title: "My Profile",
       },
       {
         id: 3,
-        link: "author/author-articles",
+        link: "/author/author-articles",
         icon: "skillgro-book",
         title: "My Articles",
       },
       {
         id: 4,
-        link: "author/author-setting",
+        link: "/author/author-setting",
         icon: "skillgro-settings",
         title: "Settings",
       },
