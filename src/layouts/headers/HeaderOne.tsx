@@ -79,7 +79,7 @@ const HeaderOne = () => {
                             Log in
                           </Link>
                         ) : (
-                          <Link className="btn " href="/author-dashboard">
+                          <Link className="btn " href="/author/author-dashboard">
                             <i className="fa fa-user" aria-hidden="true"></i>
                           </Link>
                         )}
@@ -87,7 +87,7 @@ const HeaderOne = () => {
                     </div>
                     <div className="mobile-login-btn">
                       {token && (
-                        <Link href="/author-dashboard">
+                        <Link href="/author/author-dashboard">
                           <InjectableSvg
                             src="/assets/img/icons/user.svg"
                             alt=""

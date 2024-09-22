@@ -9,8 +9,8 @@ import { RootState } from "@/redux/store";
 import { UserDetails } from "@/data/dashboard-data/UserData";
 import { initializeToken } from "@/redux/features/authSlice";
 
-const enrolled_courses: string[] = ["My Articles", "Active Articles", "Completed Courses"];
-const my_courses: string[] = ["Publish", "Pending", "Draft"];
+const enrolled_courses = ["My Articles", "Active Articles", "Completed Courses"];
+const my_courses = ["Publish", "Pending", "Draft"];
 
 const setting = {
    slidesPerView: 3,
@@ -33,49 +33,45 @@ const AuthorArticlesContent = ({ style }: any) => {
    const [articles, setArticles] = useState<any[]>([]); // State to store fetched articles
    const [error, setError] = useState<string | null>(null); // State to store error messages
    const dispatch = useDispatch();
-
-   const userDetails = useSelector(
-      (state: RootState) => state.auth.user
-   ) as UserDetails | null;
+   const userDetails = useSelector((state: RootState) => state.auth.user) as UserDetails | null;
 
    useEffect(() => {
       if (typeof window !== "undefined") {
          dispatch(initializeToken());
-      }
-   }, [dispatch]);
-
-   useEffect(() => {
-      if (userDetails) {
          fetchArticles();
       }
-   }, [userDetails]); // Depend on userDetails to refetch articles when userDetails changes
+   }, [dispatch]);
 
    const handleTabClick = (index: number) => {
       setActiveTab(index);
    };
 
    const fetchArticles = async () => {
-      try {
-         const userID = userDetails?._id;
+      const storedToken = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('token', storedToken || '');
 
-         const response = await fetch(`http://localhost:3000/api/article/fetchArticle`, {
+      try {
+         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+         const response = await fetch(`${apiUrl}api/article/fetchArticleByUserId`, {
             method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ userID }),
+            body: formData,
          });
 
          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
          }
 
-         const data = await response.json();
-         console.log("Fetched articles data:", data); // Log data for debugging
-         setArticles(data); // Update state with the fetched articles
+         const responseData = await response.json();
+         
+         if (responseData.status === 201) {
+            setArticles([responseData.data]); // Set articles array with the fetched data
+         } else {
+            setError("No articles found."); // Handle case where no articles are returned
+         }
       } catch (error) {
          console.error("Error fetching articles:", error);
-         setError("Error fetching articles. Please try again later."); // Update error state
+         setError("Error fetching articles. Please try again later.");
       }
    };
 
@@ -99,8 +95,8 @@ const AuthorArticlesContent = ({ style }: any) => {
                      </ul>
                   </div>
                   <div className="tab-content" id="courseTabContent">
-                     {articles.length === 0 ? (
-                        <p>No articles found.</p>
+                     {error ? (
+                        <p className="error-message">{error}</p>
                      ) : (
                         <div className="tab-pane fade show active" role="tabpanel">
                            <Swiper
@@ -112,7 +108,11 @@ const AuthorArticlesContent = ({ style }: any) => {
                                  <SwiperSlide key={article._id} className="swiper-slide">
                                     <div className="courses__item courses__item-two shine__animate-item">
                                        <div className="courses__item-thumb courses__item-thumb-two">
+<<<<<<< HEAD
                                           <Link href="/article-details" className="shine__animate-link">
+=======
+                                          <Link href={`/article-details?articleId=${article._id}`} className="shine__animate-link">
+>>>>>>> d22a8acc6a2788945f437525231a303aab17bd6f
                                              {article.fileName ? (
                                                 <Image
                                                    src={`/uploads/articlethumb/${article.fileName}`}
@@ -135,11 +135,19 @@ const AuthorArticlesContent = ({ style }: any) => {
                                        <div className="courses__item-content courses__item-content-two">
                                           <ul className="courses__item-meta list-wrap">
                                              <li className="courses__item-tag">
+<<<<<<< HEAD
                                                 <Link href="/article-category">{article.category}</Link>
                                              </li>
                                           </ul>
                                           <h5 className="title">
                                              <Link href="/article-details">{article.title}</Link>
+=======
+                                                <Link href={`/article-category/${article.category}`}>{article.category}</Link>
+                                             </li>
+                                          </ul>
+                                          <h5 className="title">
+                                             <Link href={`/article-details?articleId=${article._id}`}>{article.title}</Link>
+>>>>>>> d22a8acc6a2788945f437525231a303aab17bd6f
                                           </h5>
                                           <p className="description">{article.description}</p>
                                           <p className="author">
@@ -153,7 +161,6 @@ const AuthorArticlesContent = ({ style }: any) => {
                         </div>
                      )}
                   </div>
-                  {error && <p className="error-message">{error}</p>} {/* Display error message if present */}
                </div>
             </div>
          </div>

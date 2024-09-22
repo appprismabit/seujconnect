@@ -20,12 +20,20 @@ const DashboardSidebar = ({ style }: any) => {
     (state: RootState) => state.auth.user
   ) as UserDetails | null;
 
-  // this is done only to handle the page refresh
+  // Handle token initialization on page refresh
   useEffect(() => {
     if (typeof window !== "undefined") {
       dispatch(initializeToken());
     }
   }, [dispatch]);
+
+ 
+  // Determine which sidebar data to use based on the user's role or id
+  const roleBasedSidebar = userDetails?.role === 0
+    ? sidebar_data[0] // For role 0, show first sidebar data
+    : userDetails?.role === 1
+    ? sidebar_data[1] // For role 1, show second sidebar data
+    : null; // Handle other roles or conditions
 
   return (
     <div className="col-lg-3">
@@ -42,11 +50,10 @@ const DashboardSidebar = ({ style }: any) => {
             {/* Display user details if available */}
             {userDetails ? (
               <>
-                <h4 className="title text-success">{userDetails.fname} {userDetails.lname}</h4>
-                <h6 className="title">
-            
-                  {userDetails.qualification}
-                </h6>
+                <h4 className="title text-success">
+                  {userDetails.fname} {userDetails.lname}
+                </h4>
+                <h6 className="title">{userDetails.qualification}</h6>
                 <h6 className="title">
                   <i className="fa fa-envelope" aria-hidden="true"></i>{" "}
                   {userDetails.email}
@@ -64,16 +71,18 @@ const DashboardSidebar = ({ style }: any) => {
           </div>
         </div>
         <div className="account__divider"></div>
-        {sidebar_data.map((item) => (
-          <React.Fragment key={item.id}>
+
+        {/* Render the role-based sidebar */}
+        {roleBasedSidebar && (
+          <>
             <div
-              className={`dashboard__sidebar-title mb-20 ${item.class_name}`}
+              className={`dashboard__sidebar-title mb-20 ${roleBasedSidebar.class_name}`}
             >
-              <h6 className="title">{item.title}</h6>
+              <h6 className="title">{roleBasedSidebar.title}</h6>
             </div>
             <nav className="dashboard__sidebar-menu">
               <ul className="list-wrap">
-                {item.sidebar_details.map((list) => (
+                {roleBasedSidebar.sidebar_details.map((list) => (
                   <li
                     key={list.id}
                     className={pathname === list.link ? "active" : ""}
@@ -88,8 +97,8 @@ const DashboardSidebar = ({ style }: any) => {
             </nav>
             <div className="account__divider"></div>
             <LogoutButton />
-          </React.Fragment>
-        ))}
+          </>
+        )}
       </div>
     </div>
   );

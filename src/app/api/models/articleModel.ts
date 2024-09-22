@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-// Interface for Content Block (used inside the article content array)
+
 interface IContentBlock {
   type: 'heading' | 'paragraph' | 'image' | 'blockquote';
   level?: number;  // For headings, optional
@@ -9,36 +9,23 @@ interface IContentBlock {
   alt?: string;    // Alternative text for images
 }
 
-interface ICommentBlock{
-  text?: string; 
+
+interface ICommentBlock {
+  text?: string;
   phoneNumber?: string;
 }
-
-// Interface to define the structure of an article document
-interface IaddArticle extends Document {
-  title?: string;  // Optional
-  description?: string; // Optional
-  category?: string; // Optional
-  userId: string;
-  filePath?: string; 
-  fileName?: string;// Optional field to store the file path
-  content: IContentBlock[]; // Array of content blocks
-  comments: ICommentBlock[];
-}
 const commentBlockSchema: Schema<ICommentBlock> = new Schema({
- 
- 
   text: {
     type: String,
-    required: false  
+    required: false
   },
- 
   phoneNumber: {
     type: String,
-    required: false 
+    required: false
   }
 });
-// Define the schema for content blocks
+
+// Schema for Content Block
 const contentBlockSchema: Schema<IContentBlock> = new Schema({
   type: {
     type: String,
@@ -47,41 +34,56 @@ const contentBlockSchema: Schema<IContentBlock> = new Schema({
   },
   level: {
     type: Number,
-    required: function() { return this.type === 'heading'; } // Required for headings
+    required: function () { return this.type === 'heading'; } // Required for headings
   },
   text: {
     type: String,
-    required: function() { return this.type !== 'image'; } // Required for non-image types
+    required: function () { return this.type !== 'image'; } // Required for non-image types
   },
   src: {
     type: String,
-    required: function() { return this.type === 'image'; } // Required for images
+    required: function () { return this.type === 'image'; } // Required for images
   },
   alt: {
     type: String,
-    required: function() { return this.type === 'image'; } // Required for images
+    required: function () { return this.type === 'image'; } // Required for images
   }
 });
 
-// Define the schema for the article model
-const articleSchema: Schema<IaddArticle> = new Schema(
-  {
-    title: { type: String, default: null }, // Optional
-    description: { type: String, default: null }, // Optional
-    category: { type: String, default: null }, // Optional
-    userId: { type: String, required: true },
-    filePath: { type: String, default: null }, 
-    fileName: { type: String, default: null }, // Optional field to store file path
-    content: [contentBlockSchema], // Array of content blocks
-    comments: [commentBlockSchema]
-  },
-  { timestamps: true } // Automatically adds createdAt and updatedAt timestamps
-);
+
+
+interface IArticle extends Document {
+  title?: string;  // Optional
+  description?: string; // Optional
+  category?: string; // Optional
+  userId: string; // Required
+  filePath?: string;
+  fileName?: string;
+  likes?: number;  // Single object instead of array
+  dislike?: number;
+  status?:number;
+  content: IContentBlock[]; // Array of content blocks
+  comments: ICommentBlock[]; // Array of comment blocks
+}
+
+// Schema for Article
+const articleSchema: Schema<IArticle> = new Schema({
+  title: { type: String, default: null },
+  description: { type: String, default: null },
+  category: { type: String, default: null },
+  userId: { type: String, required: true },
+  filePath: { type: String, default: null },
+  fileName: { type: String, default: null },
+  likes: { type: Number, default: 0 },
+  dislike: { type: Number, default: 0 },
+  status: { type: Number, default: 0 },
+  content: [contentBlockSchema],
+  comments: [commentBlockSchema]
+}, { timestamps: true });
 
 // Register the article model, or use the existing one if already registered
-const registerArticleModel: Model<IaddArticle> =
-  mongoose.models.Article ||
-  mongoose.model<IaddArticle>("Article", articleSchema);
+const ArticleModel: Model<IArticle> =
+  mongoose.models.Article || mongoose.model<IArticle>("Article", articleSchema);
 
-export default registerArticleModel;
-export type { IaddArticle, IContentBlock, ICommentBlock };
+export default ArticleModel;
+export type { IArticle, IContentBlock, ICommentBlock };

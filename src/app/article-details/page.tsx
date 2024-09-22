@@ -1,12 +1,15 @@
-import SingleArticle from "@/dashboard/instructor-dashboard/singleArticle";
+import CourseDetails from "@/components/courses/course-details";
 import Wrapper from "@/layouts/Wrapper";
 
-const index = () => {
+export const metadata = {
+   title: "Course Details SkillGro - Online Courses & Education React Next js Template",
+};
+const page = () => {
    return (
       <Wrapper>
-         <SingleArticle />
+         <CourseDetails />
       </Wrapper>
    )
 }
 
-export default index
+export default page
