@@ -14,6 +14,7 @@ export async function addArticle(body: any) {
   if (decoded && typeof decoded !== "string") {
     userId = (decoded as JwtPayload)?.user?._id; // Accessing the user's ID from the token
   }
+
   if (!userId) {
     throw new Error("User ID not found in token");
   }
@@ -29,10 +30,6 @@ export async function addArticle(body: any) {
 
     //console.log(newArticle);
 
-
-
-
-
     // Save the new article to the database
     const result = await newArticle.save();
     console.log(result);
@@ -43,7 +40,6 @@ export async function addArticle(body: any) {
     throw new Error(error.message);
   }
 };
-
 
 interface ArticleData {
   userId: string;
@@ -118,17 +114,11 @@ export async function addArticleContent(body: any) {
     throw new Error(error.message);
   }
 };
-
-
-
-
 export async function removeArticleContent(body: any) {
   const _Id = body.articleId;
   const contentIdToRemove = body.contentIdToRemove;
 
   try {
-
-
     // Use findByIdAndUpdate with $pull to remove content
     const updatedArticle = await registerArticleModel.findByIdAndUpdate(
       _Id,
@@ -192,7 +182,7 @@ export async function updateArticle(body: any) {
   }
 
   return updateArticleById;
-}
+};
 
 export async function updateArticleContent(body: any) {
   const articleId = body.articleId;
@@ -255,29 +245,18 @@ export async function addArticleComment(body: any) {
   }
 };
 
-
-
-
 export async function updateLikeDislikeCounts(articleId: string, status: string) {
-
   const _id = articleId;
-  // console.log(_id);
-
-
   try {
     if (status === '1') {
       const result = await registerArticleModel.findByIdAndUpdate(
         _id,
         { $inc: { likes: 1 } }, // Increment likes by 1
-        { new: true } // Return the updated document
+        { new: true }
       ).exec();
-
-
-
       if (!result) {
         throw new Error('Article not found');
       }
-
       return {
         message: 'Like count updated successfully',
         updatedArticle: result,
@@ -286,29 +265,120 @@ export async function updateLikeDislikeCounts(articleId: string, status: string)
       const result = await registerArticleModel.findByIdAndUpdate(
         _id,
         { $inc: { dislike: 1 } }, // Increment dislike by 1
-        { new: true } // Return the updated document
+        { new: true }
       ).exec();
-
-
-
       if (!result) {
         throw new Error('Article not found');
       }
-
       return {
         message: 'Like count updated successfully',
         updatedArticle: result,
+      }
     }
-  }
-
-
   } catch (error: any) {
     console.error('Error updating like count:', error);
     throw new Error(error.message);
   }
+
+};
+
+export async function articleCount(userId?: string) {
+  try {
+   
+    // First, fetch the user's role based on the userId
+    const user = await registerArticleModel.findOne({ userId }, { role: 1 }); // Assuming `role` field exists
+  
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const userRole = user.role; 
+
+    // Create a match stage based on the user's role
+    const matchStage = userRole === 0
+      ? [] // If role is 0, fetch all counts (no match)
+      : [{ $match: { userId } }]; // If role is not 0, fetch only user-specific counts
+
+    // Perform aggregation based on the match stage
+    const counts = await registerArticleModel.aggregate([
+      ...matchStage, // Spread the match stage into the pipeline
+      {
+        $group: {
+          _id: '$status', // Group by the numeric status field
+          count: { $sum: 1 } // Count each document in the group
+        }
+      }
+    ]).exec(); // Execute the query
+
+    // Map status to human-readable format
+    const statusMapping: { [key: number]: string } = {
+      0: 'draft',
+      1: 'request_for_approval',
+      2: 'published',
+      3: 'rejected'
+    };
+
+    // Initialize the result object
+    const result: { [key: string]: number } = {
+      draft: 0,
+      request_for_approval: 0,
+      published: 0,
+      rejected: 0
+    };
+
+    // Populate the result with counts
+    counts.forEach(item => {
+      const statusKey = item._id as number;
+      const statusName = statusMapping[statusKey];
+
+      if (statusName) {
+        result[statusName] = item.count;
+      }
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Error counting articles:', error);
+    throw new Error('Failed to count articles');
+  }
 }
 
 
+
+export async function articleStatus(status: string, articleId: string) {
+
+  try {
+    const _id = articleId;
+
+    if (!_id) {
+      throw new Error("User ID not found in token");
+    }
+    const result = await registerArticleModel.findByIdAndUpdate(
+      _id,  // Ensure this is the document's _id or a valid identifier
+      { $set: { status } },  // set status into the status array field
+      { new: true, runValidators: true } // Return the updated document and run validators
+    );
+    console.log(result);
+    if (result) {
+      return (
+        { message: 'Saved...' }
+      );
+    }
+
+  } catch (error: any) {
+    console.error('Error counting articles:', error);
+    throw new Error('Failed to count articles');
+  }
+}
+//Mir Kashem Ali
+//Kabyashree Buragohain
+//Alakesh Gogoi
+//Devaj Neogi
+//Himasree Das
+//Riza Debbarma 
+/*
+
+*/
 
 
 

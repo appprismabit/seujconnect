@@ -61,6 +61,7 @@ interface IArticle extends Document {
   fileName?: string;
   likes?: number;  // Single object instead of array
   dislike?: number;
+  status?:number;
   content: IContentBlock[]; // Array of content blocks
   comments: ICommentBlock[]; // Array of comment blocks
 }
@@ -75,6 +76,7 @@ const articleSchema: Schema<IArticle> = new Schema({
   fileName: { type: String, default: null },
   likes: { type: Number, default: 0 },
   dislike: { type: Number, default: 0 },
+  status: { type: Number, default: 0 },
   content: [contentBlockSchema],
   comments: [commentBlockSchema]
 }, { timestamps: true });

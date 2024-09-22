@@ -16,25 +16,21 @@ const DashboardCounter = ({ style }: any) => {
    const userDetails = useSelector((state: RootState) => state.auth.user) as UserDetails | null;
 
    useEffect(() => {
-
       if (typeof window !== "undefined") {
          dispatch(initializeToken());
-         fetchCount(); // Fetch counts after dispatching token initialization
       }
-     
+      fetchCount(); // Fetch counts after dispatching token initialization
    }, [dispatch]);
 
    const fetchCount = async () => {
       try {
-         const token = localStorage.getItem('token');
-      
-         if(!token){
-            console.warn("No token found. Skipping fetch.");
-            return;
-         }
+         const userID = userDetails?._id;
          const formData = new FormData();
-
-        formData.append('token', token);
+         if (userID) {
+            formData.append('userId', userID); 
+         } else {
+            console.error('userID is undefined or null');
+         }
 
          const response = await fetch(`http://localhost:3000/api/article/articleCount`, {
             method: "POST",
@@ -65,7 +61,7 @@ const DashboardCounter = ({ style }: any) => {
          {roleBasedData && (
             <>
                {roleBasedData.map((item) => (
-                  <div key={item.id} className="col-lg-3 col-md-3 col-sm-6">
+                  <div key={item.id} className="col-lg-4 col-md-4 col-sm-6">
                      <div className="dashboard__counter-item">
                         <div className="icon">
                            <i className={item.icon}></i>

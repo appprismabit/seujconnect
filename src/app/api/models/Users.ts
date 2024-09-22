@@ -7,6 +7,7 @@ interface IUser extends Document {
   phone: string;
   email: string;
   password: string;
+  role: number;
 }
 
 // Create the User schema
@@ -16,6 +17,7 @@ const userSchema: Schema<IUser> = new Schema({
   phone: { type: String, required: true },  // Phone number field
   email: { type: String, required: true, unique: true, lowercase: true },  // Email field
   password: { type: String, required: true },  // Hashed password field
+  role: {type: Number, default: 1}
 });
 
 // Create and export the User model

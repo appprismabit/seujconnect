@@ -53,7 +53,7 @@ const LoginForm = () => {
       if (result.meta.requestStatus === "fulfilled") {
         toast.success("Login successful!", { position: "top-center" });
         reset();
-        router.push("/author-dashboard");
+        router.push("/author/author-dashboard");
       } else {
         toast.error(result.payload || "Login failed", {
           position: "top-center",

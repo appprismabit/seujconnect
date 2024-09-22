@@ -10,6 +10,7 @@ import wishlist_avatar1 from "@/assets/img/courses/course_author001.png"
 import wishlist_avatar2 from "@/assets/img/courses/course_author002.png"
 import wishlist_avatar3 from "@/assets/img/courses/course_author003.png"
 import wishlist_avatar4 from "@/assets/img/courses/course_author004.png"
+import { UserDetails, initializeToken } from "@/redux/features/authSlice"; 
 
 interface DataType {
    id: number;
