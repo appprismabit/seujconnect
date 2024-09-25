@@ -1,9 +1,7 @@
-import BtnArrow from "@/svg/BtnArrow";
+import {BtnArrow} from "@/svg/BtnArrow";
 import Image from "next/image";
 import Link from "next/link";
 
-import avatar from "@/assets/img/courses/details_instructors01.jpg";
-import avatar_2 from "@/assets/img/courses/details_instructors02.jpg";
 
 const DashboardBanner = ({ style }: any) => {
   return (

@@ -2,7 +2,7 @@ import DashboardSidebar from "@/dashboard/dashboard-common/DashboardSidebar";
 import DashboardBanner from "../../dashboard-common/DashboardBanner";
 import DashboardCounter from "./DashboardCounter";
 import Link from "next/link";
-import BtnArrow from "@/svg/BtnArrow";
+import {BtnArrow} from "@/svg/BtnArrow";
 
 const DashboardHomeArea = () => {
   return (

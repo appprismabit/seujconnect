@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 interface IContentBlock {
   type: 'heading' | 'paragraph' | 'image' | 'blockquote';
-  level?: number;  // For headings, optional
+  level?: string;  // For headings, optional
   text?: string;   // For headings, paragraphs, blockquotes
   src?: string;    // For images
   alt?: string;    // Alternative text for images
@@ -33,8 +33,9 @@ const contentBlockSchema: Schema<IContentBlock> = new Schema({
     required: true
   },
   level: {
-    type: Number,
-    required: function () { return this.type === 'heading'; } // Required for headings
+    type: String,
+    required: false, // Required for headings,
+    
   },
   text: {
     type: String,

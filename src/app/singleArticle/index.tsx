@@ -3,7 +3,7 @@ import FooterOne from '@/layouts/footers/FooterOne'
 import HeaderOne from '@/layouts/headers/HeaderOne'
 import SingleArticleArea from './singleArticlearea'
 
-const SingleArticle = () => {
+const index = () => {
    return (
       <>
          <HeaderOne />
@@ -15,4 +15,4 @@ const SingleArticle = () => {
       </>
    )
 }
-export default SingleArticle
+export default index

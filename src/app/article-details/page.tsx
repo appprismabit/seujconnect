@@ -1,4 +1,4 @@
-import CourseDetails from "@/components/courses/course-details";
+import CourseDetails from "@/components/courses/article-details";
 import Wrapper from "@/layouts/Wrapper";
 
 export const metadata = {

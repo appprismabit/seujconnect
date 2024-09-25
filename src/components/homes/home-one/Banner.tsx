@@ -3,7 +3,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import SvgAnimation from "@/hooks/SvgAnimation";
-import BtnArrow from "@/svg/BtnArrow";
+import {BtnArrow} from "@/svg/BtnArrow";
 
 import banner_img_1 from "@/assets/img/banner/banner_img.png";
 import banner_shape_1 from "@/assets/img/banner/banner_shape01.png";

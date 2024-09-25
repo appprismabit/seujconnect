@@ -108,11 +108,7 @@ const AuthorArticlesContent = ({ style }: any) => {
                                  <SwiperSlide key={article._id} className="swiper-slide">
                                     <div className="courses__item courses__item-two shine__animate-item">
                                        <div className="courses__item-thumb courses__item-thumb-two">
-<<<<<<< HEAD
-                                          <Link href="/article-details" className="shine__animate-link">
-=======
                                           <Link href={`/article-details?articleId=${article._id}`} className="shine__animate-link">
->>>>>>> d22a8acc6a2788945f437525231a303aab17bd6f
                                              {article.fileName ? (
                                                 <Image
                                                    src={`/uploads/articlethumb/${article.fileName}`}
@@ -135,19 +131,11 @@ const AuthorArticlesContent = ({ style }: any) => {
                                        <div className="courses__item-content courses__item-content-two">
                                           <ul className="courses__item-meta list-wrap">
                                              <li className="courses__item-tag">
-<<<<<<< HEAD
-                                                <Link href="/article-category">{article.category}</Link>
-                                             </li>
-                                          </ul>
-                                          <h5 className="title">
-                                             <Link href="/article-details">{article.title}</Link>
-=======
                                                 <Link href={`/article-category/${article.category}`}>{article.category}</Link>
                                              </li>
                                           </ul>
                                           <h5 className="title">
                                              <Link href={`/article-details?articleId=${article._id}`}>{article.title}</Link>
->>>>>>> d22a8acc6a2788945f437525231a303aab17bd6f
                                           </h5>
                                           <p className="description">{article.description}</p>
                                           <p className="author">

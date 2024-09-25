@@ -40,12 +40,12 @@ export async function POST(req: Request) {
       .exec();
     
     
-    if (typeof lastArticle === null) {
-      console.log("Khumaisu");
-      let lastArticle: { _id?: string } | undefined;
-      lastArticle = { _id: "G_style" }; 
-      console.log(lastArticle);
-    }
+    // if (typeof lastArticle === null) {
+     
+    //   let lastArticle: { _id?: string } | undefined;
+    //   lastArticle = { _id: "G_style" }; 
+    //   console.log(lastArticle);
+    // }
     const fileName = file.name;
     const fileExtension = fileName.split('.').pop();
     const newName = 'AR-TH' + lastArticle?._id + '.' + fileExtension;

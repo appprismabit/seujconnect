@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import BtnArrow from "@/svg/BtnArrow";
+import {BtnArrow} from "@/svg/BtnArrow";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux"; // Import Redux hooks

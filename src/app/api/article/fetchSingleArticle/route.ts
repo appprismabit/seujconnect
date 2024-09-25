@@ -13,6 +13,8 @@ export async function POST(req: NextRequest){
         await connectDB();
         const formData = await req.formData();
         const articleId = formData.get('articleId')?.toString() || '';
+        console.log('This is the articleId ' +articleId);
+        
         if(!articleId){
             return NextResponse.json({success: false, message : 'Please input article id'}, {status: 400});
 

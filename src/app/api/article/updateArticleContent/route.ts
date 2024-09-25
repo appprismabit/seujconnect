@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "../../db";
 import { updateArticleContent } from '../../controllers/articleController';
+import FileHelper from "../../Helpers/FileUploadHelper";
 
 export const config = {
     api: {
@@ -15,13 +16,20 @@ export async function POST(req: Request) {
         const type = formData.get('content[type]')?.toString() || '';
         const level = formData.get('content[level]')?.toString() || '';
         const text = formData.get('content[text]')?.toString() || '';
-        const src = formData.get('content[src]')?.toString() || '';
+        const src = formData.get('content[src]') as File || '';
         const alt = formData.get('content[alt]')?.toString() || '';
         const articleId = formData.get('articleId')?.toString() || '';
         const contentId = formData.get('contentId')?.toString() || '';
+
+        // const fileName = src;
+        // const fileExtension = fileName.split('.').pop();
+        // const newName = 'AR-CON' + fileName + fileExtension;
+
+        // const savedFilePath = await FileHelper.saveFile(src.stream(), newName, 'uploads/artclecontent');
+
         const contentBlock: any = { type };
         if (type === 'heading' && level) {
-            contentBlock.level = parseInt(level, 10);
+            contentBlock.level = level;
         }
         if (type === 'image' && src) {
             contentBlock.src = src;
@@ -36,6 +44,8 @@ export async function POST(req: Request) {
             articleId,
             contentId
         };
+
+
 
         const result = await updateArticleContent(newArticle);
 
@@ -53,3 +63,4 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: errorMessage }, { status: 500 });
     }
 };
+

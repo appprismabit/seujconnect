@@ -143,7 +143,7 @@ const ArticleArea = ({ style }: any) => {
                       </p>
                       <div className="courses__item-bottom">
                         <div className="button">
-                          <Link href="/article-details">
+                          <Link href={`/article-details?id=${article._id}`}>
                             <span className="text">Read More</span>
                             <i className="flaticon-arrow-right"></i>
                           </Link>

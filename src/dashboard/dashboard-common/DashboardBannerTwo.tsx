@@ -1,4 +1,4 @@
-import BtnArrow from "@/svg/BtnArrow"
+   import {BtnArrow} from "@/svg/BtnArrow"
 import Image from "next/image"
 import Link from "next/link"
 import InjectableSvg from "@/hooks/InjectableSvg"

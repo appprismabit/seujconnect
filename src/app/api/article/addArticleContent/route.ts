@@ -26,12 +26,14 @@ export async function POST(req: Request) {
     const src = formData.get('content[src]') as File;
     const alt = formData.get('content[alt]')?.toString() || '';
     const articleId = formData.get('articleId')?.toString() || '';
+    console.log('This is the article id ' + articleId);
+    
 
     const contentBlock: any = { type };
 
     // Add fields conditionally based on the content type
     if (type === 'heading' && level) {
-      contentBlock.level = parseInt(level, 10);
+      contentBlock.level = level;
     }
 
     if (type === 'image' && src) {
@@ -40,9 +42,9 @@ export async function POST(req: Request) {
       .exec();
       const fileName = src.name;
     const fileExtension = fileName.split('.').pop();
-    const newName = 'AR-TH' + lastArticle?._id + '.' + fileExtension;
-    const savedFilePath = await FileHelper.saveFile(src.stream(), newName, "uploads/artclecontent");
-      contentBlock.src = newName;
+    //const newName = 'AR-TH' + lastArticle?._id + '.' + fileExtension;
+    const savedFilePath = await FileHelper.saveFile(src.stream(), fileName, "uploads/artclecontent");
+      contentBlock.src = fileName;
       contentBlock.alt = alt;
     } else if (text) {
       contentBlock.text = text;
@@ -56,8 +58,9 @@ export async function POST(req: Request) {
 
     const newArticle = {
       content: contentArray,
-      articleId,
+      articleId
     };
+    console.log(newArticle)
     
 
     // Retrieve the existing article content using userId (from token)

@@ -7,23 +7,16 @@ interface CategoryItem {
 const category_data: CategoryItem[] = [
   {
     id: 1,
-    title: "Organic Farming",
+    title: "heading",
   },
   {
     id: 2,
-    title: "Crop Cultivation Techniques",
+    title: "bullet",
   },
   {
     id: 3,
-    title: "Sustainable Agriculture",
+    title: "paragraph",
   },
-  {
-    id: 4,
-    title: " Agri-Tech Innovations",
-  },
-  {
-    id: 5,
-    title: "Farmer Success Stories",
-  },
+  
 ];
 export default category_data;

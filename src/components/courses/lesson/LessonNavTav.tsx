@@ -1,8 +1,8 @@
 "use client"
 import { useState } from "react";
-import Overview from "../course-details/Overview";
-import Reviews from "../course-details/Reviews";
-import Instructors from "../course-details/Instructors";
+import Overview from "../article-details/Overview";
+import Reviews from "../article-details/Reviews";
+import Instructors from "../article-details/Instructors";
 
 const tab_title: string[] = ["Overview", "Instructors", "reviews"];
 

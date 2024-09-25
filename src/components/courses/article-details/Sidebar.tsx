@@ -4,12 +4,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react";
 import InjectableSvg from "@/hooks/InjectableSvg";
-import BtnArrow from "@/svg/BtnArrow";
+import {BtnArrow, BtnPlus } from "@/svg/BtnArrow";
 
 import img_1 from "@/assets/img/courses/course_thumb02.jpg"
 import img_2 from "@/assets/img/others/payment.png"
 
-const Sidebar = () => {
+const Sidebar = ({ article }: { article: any[] }) => {
 
    const [isVideoOpen, setIsVideoOpen] = useState(false);
 
@@ -18,7 +18,11 @@ const Sidebar = () => {
          <div className="col-xl-3 col-lg-4">
             <div className="courses__details-sidebar">
                <div className="courses__details-video">
-                  <Image src={img_1} alt="img" />
+                  <Image src={`/uploads/artclecontent/AR-TH66e68e1df89acab5b874739b.jpg`}
+                   width={300}
+                   height={200}
+                   layout="responsive"
+                  alt="img" />
                   <a onClick={() => setIsVideoOpen(true)} style={{ cursor: "pointer" }} className="popup-video"><i className="fas fa-play"></i></a>
                </div>
                <div className="courses__cost-wrap">

@@ -1,7 +1,7 @@
 "use client";
 
 import category_data from "@/data/ArticleData/CategoryData";
-import BtnArrow from "@/svg/BtnArrow";
+import {BtnArrow} from "@/svg/BtnArrow";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 

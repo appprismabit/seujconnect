@@ -95,20 +95,20 @@ export async function delArticleById(body: any) {
 }
 
 export async function addArticleContent(body: any) {
-
   const _id = body.articleId;
-
 
   if (!_id) {
     throw new Error("Article id not found");
   }
+ 
+  
   try {
+   
     const updatedArticle = await registerArticleModel.findOneAndUpdate(
       { _id },
       { $push: { content: { $each: body.content } } },
       { new: true, runValidators: true }
     );
-
 
     if (!updatedArticle) {
       throw new Error("No article found for this article id.");
@@ -119,10 +119,11 @@ export async function addArticleContent(body: any) {
       updatedUser: updatedArticle
     };
   } catch (error: any) {
-    console.error("Error adding article: This is already taken");
+    console.error("Error adding article:", error.message);
     throw new Error(error.message);
   }
 };
+
 export async function removeArticleContent(body: any) {
   const _Id = body.articleId;
   const contentIdToRemove = body.contentIdToRemove;

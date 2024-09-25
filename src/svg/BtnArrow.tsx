@@ -7,4 +7,13 @@ const BtnArrow = () => {
    )
 }
 
-export default BtnArrow
+
+const BtnPlus = () => {
+   return (
+      <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg" className="injectable">
+      <path d="M8 1v12 M1 7h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 1v12M1 7h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+   </svg>
+   )
+}
+export { BtnArrow, BtnPlus };
